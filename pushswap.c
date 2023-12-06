@@ -10,4 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-kjshdjkhsjk
+#include "libft.h"
+
+int main(int ac, char **av)
+{
+    int i;
+    int j;
+
+    i = 0;
+    if (ac >= 2)
+    {
+        while (++i < ac)
+        {
+            j = -1;
+            while(av[i][++j])
+            {
+                if (!ft_isdigit(av[i][j]))
+                    return(ft_printf("Error\n"));
+            }
+        }
+    }
+    return (0);
+}
