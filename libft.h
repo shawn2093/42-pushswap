@@ -58,6 +58,14 @@ typedef struct s_flags
 	int	precision;
 }		t_flags;
 
+typedef struct s_stack
+{
+	int				number;
+	struct s_stack	*prev;
+	struct s_stack	*next;
+	struct s_stack	*target;
+}					t_stack;
+
 int		ft_atoi(const char *str);
 void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t count, size_t size);
@@ -119,7 +127,7 @@ void	ft_lstadd_back_gnl(t_gnl **lst, t_gnl *new);
 int		ft_lstsize_gnl(t_gnl *lst);
 void	make_new(t_gnl **bufstr, char *str);
 void	clean_list(t_gnl **bufstr);
-char	*fill_letters(t_gnl *bufstr, int len);
+char	*fill_letter(t_gnl *bufstr, int len);
 char	*get_line(t_gnl *bufstr);
 int		found_nl(t_gnl **bufstr);
 void	create_list(int fd, t_gnl **bufstr);

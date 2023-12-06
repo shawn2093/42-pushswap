@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char	*fill_letters(t_gnl *bufstr, int len)
+char	*fill_letter(t_gnl *bufstr, int len)
 {
 	char	*str;
 	int		i;
@@ -53,7 +53,7 @@ char	*get_line(t_gnl *bufstr)
 			break ;
 	}
 	len = BUFFER_SIZE * (count - 1) + i;
-	return (fill_letters(bufstr, len));
+	return (fill_letter(bufstr, len));
 }
 
 int	found_nl(t_gnl **bufstr)

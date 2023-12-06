@@ -25,7 +25,7 @@ all: $(NAME)
 $(NAME): $(LIBFTNAME)
 
 $(LIBFTNAME): $(OBJS)
-	$(AR) $(NAME) $(OBJS)
+	$(AR) $(LIBFTNAME) $(OBJS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(OPTION) -c $< -o $@
