@@ -74,7 +74,6 @@ void init_stack(char **av, t_stack **a)
     tmp = (t_stack *) malloc(sizeof(t_stack));
     while(av[++i])
     {
-        // ft_printf("%d\n", ft_atoi(av[i]));
         tmp = ft_stacknew(ft_atoi(av[i]));
         ft_stackadd_back(a, tmp);
     }
@@ -128,6 +127,34 @@ void sa(t_stack **a)
     printf("sa\n");
 }
 
+void sortthree(t_stack **a)
+{
+    int first;
+    int second;
+    int third;
+
+    first = (*a)->number;
+    second = (*a)->next->number;
+    third = (*a)->next->next->number;
+    if (first < third && second > third)
+    {
+        ra(a);
+        sa(a);
+        rra(a);
+    }
+    else if (first < third && first > second)
+        sa(a);
+    else if (first < second && first > third)
+        rra(a);
+    else if (first > third && second < third)
+        ra(a);
+    else if (first > second && second > third)
+    {
+        sa(a);
+        rra(a);
+    }
+}
+
 int main(int ac, char **av)
 {
     int     i;
@@ -150,8 +177,7 @@ int main(int ac, char **av)
             }
         }
         init_stack(av, a);
-        pb(a, b);
-        pb(a, b);
+        sortthree(a);
         while (*b)
         {
             ft_printf("b: %d\n", (*b)->number);
