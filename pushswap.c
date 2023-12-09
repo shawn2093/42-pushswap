@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/04 16:30:48 by long             ###   ########.fr       */
+/*   Updated: 2023/12/09 22:26:53 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,8 @@ void sortthree(t_stack **a)
         rra(a);
     }
 }
+
+void sortall
 
 int main(int ac, char **av)
 {
