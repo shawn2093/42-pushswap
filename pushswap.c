@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/14 22:12:33 by long             ###   ########.fr       */
+/*   Updated: 2023/12/14 22:52:46 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,19 @@ t_stack	*ft_stacknew(int content)
     ptr->prev = NULL;
     ptr->target = NULL;
 	return (ptr);
+}
+
+int ft_stacksize(t_stack *lst)
+{
+	int i;
+
+    i = 0;
+	while (lst)
+    {
+        i++;
+        lst = lst->next;
+    }
+	return (i);
 }
 
 t_stack	*ft_stacklast(t_stack *lst)
@@ -279,6 +292,22 @@ void sortthree(t_stack **a)
     }
 }
 
+void sortall(t_stack **a, t_stack **b)
+{
+    t_stack *tmp;
+    
+    while (ft_stacksize(*a) >= 3 && ft_stacksize(*b) <= 2)
+    {
+        pb(a, b);
+        pb(a, b);
+    }
+    while (ft_stacksize(*a) >= 3)
+    {
+        tmp = *b;
+        if ((*a)->number > 
+    }
+}
+
 int main(int ac, char **av)
 {
     int     i;
@@ -301,7 +330,10 @@ int main(int ac, char **av)
             }
         }
         init_stack(av, a);
-        sortthree(a);
+        pb(a, b);
+        pb(a, b);
+        pb(a, b);
+        printf("%d\n", ft_stacksize(*a));
         while (*b)
         {
             printf("b: %d\n", (*b)->number);
