@@ -6,11 +6,42 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/13 19:43:24 by long             ###   ########.fr       */
+/*   Updated: 2023/12/14 22:12:33 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
+int	ft_atoi(const char *str)
+{
+	int	minus_num;
+	int	res;
+
+	minus_num = 1;
+	res = 0;
+	while (*str == '\t' || *str == '\n' || *str == '\v'
+		|| *str == '\f' || *str == '\r' || *str == ' ')
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			minus_num *= -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		res = res * 10 + *str - '0';
+		str++;
+	}
+	return (res * minus_num);
+}
+
+int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
 
 t_stack	*ft_stacknew(int content)
 {
@@ -79,6 +110,21 @@ void init_stack(char **av, t_stack **a)
     }
 }
 
+void pa(t_stack **a, t_stack **b)
+{
+    t_stack *tmp;
+
+    tmp = *b;
+    *b = (*b)->next;
+    (*b)->prev = NULL;
+    tmp->next = NULL;
+    if (!*a)
+        *a = tmp;
+    else
+        ft_stackadd_front(a, tmp);
+    printf("pa\n");
+}
+
 void pb(t_stack **a, t_stack **b)
 {
     t_stack *tmp;
@@ -103,7 +149,36 @@ void ra(t_stack **a)
     tmp->next = NULL;
     (*a)->prev = NULL;
     ft_stackadd_back(a, tmp);
-    printf("ra\n");
+    write(1, "ra\n", 3);
+}
+
+void rb(t_stack **b)
+{
+    t_stack *tmp;
+
+    tmp = *b;
+    *b = (*b)->next;
+    tmp->next = NULL;
+    (*b)->prev = NULL;
+    ft_stackadd_back(b, tmp);
+    write(1, "rb\n", 3);
+}
+
+void rr(t_stack **a, t_stack **b)
+{
+    t_stack *tmp;
+
+    tmp = *a;
+    *a = (*a)->next;
+    tmp->next = NULL;
+    (*a)->prev = NULL;
+    ft_stackadd_back(a, tmp);
+    tmp = *b;
+    *b = (*b)->next;
+    tmp->next = NULL;
+    (*b)->prev = NULL;
+    ft_stackadd_back(b, tmp);
+    write(1, "rr\n", 3);
 }
 
 void rra(t_stack **a)
@@ -114,7 +189,33 @@ void rra(t_stack **a)
     tmp->prev->next = NULL;
     tmp->prev = NULL;
     ft_stackadd_front(a, tmp);
-    printf("rra\n");
+    write(1, "rra\n", 4);
+}
+
+void rrb(t_stack **b)
+{
+    t_stack *tmp;
+
+    tmp = ft_stacklast(*b);
+    tmp->prev->next = NULL;
+    tmp->prev = NULL;
+    ft_stackadd_front(b, tmp);
+    write(1, "rrb\n", 4);
+}
+
+void rrr(t_stack **a, t_stack **b)
+{
+    t_stack *tmp;
+
+    tmp = ft_stacklast(*a);
+    tmp->prev->next = NULL;
+    tmp->prev = NULL;
+    ft_stackadd_front(a, tmp);
+    tmp = ft_stacklast(*b);
+    tmp->prev->next = NULL;
+    tmp->prev = NULL;
+    ft_stackadd_front(b, tmp);
+    write(1, "rrr\n", 4);
 }
 
 void sa(t_stack **a)
@@ -124,7 +225,30 @@ void sa(t_stack **a)
     tmp = (*a)->number;
     (*a)->number = (*a)->next->number;
     (*a)->next->number = tmp;
-    printf("sa\n");
+    write(1, "sa\n", 3);
+}
+
+void sb(t_stack **b)
+{
+    int     tmp;
+
+    tmp = (*b)->number;
+    (*b)->number = (*b)->next->number;
+    (*b)->next->number = tmp;
+    write(1, "sb\n", 3);
+}
+
+void ss(t_stack **a, t_stack **b)
+{
+    int     tmp;
+
+    tmp = (*a)->number;
+    (*a)->number = (*a)->next->number;
+    (*a)->next->number = tmp;
+    tmp = (*b)->number;
+    (*b)->number = (*b)->next->number;
+    (*b)->next->number = tmp;
+    write(1, "ss\n", 3);
 }
 
 void sortthree(t_stack **a)
@@ -173,19 +297,19 @@ int main(int ac, char **av)
             while(av[i][++j])
             {
                 if (!ft_isdigit(av[i][j]))
-                    return(ft_printf("Error\n"));
+                    return(write(1, "Error\n", 6));
             }
         }
         init_stack(av, a);
         sortthree(a);
         while (*b)
         {
-            ft_printf("b: %d\n", (*b)->number);
+            printf("b: %d\n", (*b)->number);
             (*b) = (*b)->next;
         }
         while (*a)
         {
-            ft_printf("a: %d\n", (*a)->number);
+            printf("a: %d\n", (*a)->number);
             (*a) = (*a)->next;
         }
         free(a);

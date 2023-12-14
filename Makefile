@@ -20,11 +20,13 @@ CFLAGS = -Wall -Wextra -Werror
 OPTION = -I ./
 
 OBJS = $(SRCS:.c=.o)
+FILS = $(FILE:.c=.o)
 
 all: $(NAME)
 
 $(NAME): $(LIBFTNAME)
-	$(CC) $(CFLAGS) $(OPTION) $(FILE) -o $(NAME)
+	$(CC) $(CFLAGS) $(FILE)
+	$(CC) $(LIBFTNAME) $(FILS) -o $(NAME)
 
 $(LIBFTNAME): $(OBJS)
 	$(AR) $(LIBFTNAME) $(OBJS)
