@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 14:40:39 by long              #+#    #+#             */
-/*   Updated: 2023/11/29 13:18:13 by long             ###   ########.fr       */
+/*   Updated: 2023/12/15 09:16:36 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,11 @@ typedef struct s_flags
 typedef struct s_stack
 {
 	int				number;
+	int				index;
+	int				target;
+	int				cost;
 	struct s_stack	*prev;
 	struct s_stack	*next;
-	struct s_stack	*target;
 }					t_stack;
 
 int		ft_atoi(const char *str);

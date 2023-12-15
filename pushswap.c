@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/14 22:52:46 by long             ###   ########.fr       */
+/*   Updated: 2023/12/15 23:33:21 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,24 @@ t_stack	*ft_stacknew(int content)
 	ptr->number = content;
 	ptr->next = NULL;
     ptr->prev = NULL;
-    ptr->target = NULL;
+    ptr->target = -1;
+    ptr->index = 0;
+    ptr->cost = 0;
 	return (ptr);
 }
 
-int ft_stacksize(t_stack *lst)
-{
-	int i;
+// int ft_stacksize(t_stack *lst)
+// {
+// 	int i;
 
-    i = 0;
-	while (lst)
-    {
-        i++;
-        lst = lst->next;
-    }
-	return (i);
-}
+//     i = 0;
+// 	while (lst)
+//     {
+//         i++;
+//         lst = lst->next;
+//     }
+// 	return (i);
+// }
 
 t_stack	*ft_stacklast(t_stack *lst)
 {
@@ -144,7 +146,8 @@ void pb(t_stack **a, t_stack **b)
 
     tmp = *a;
     *a = (*a)->next;
-    (*a)->prev = NULL;
+    if (*a)
+        (*a)->prev = NULL;
     tmp->next = NULL;
     if (!*b)
         *b = tmp;
@@ -264,6 +267,23 @@ void ss(t_stack **a, t_stack **b)
     write(1, "ss\n", 3);
 }
 
+int set_index_stacksize(t_stack **a)
+{
+    int     i;
+    t_stack *tmp;
+
+    i = 0;
+    tmp = *a;
+    while (tmp)
+    {
+        tmp->index = i;
+        tmp->target = -1;
+        i++;
+        tmp = tmp->next;
+    }
+    return (i);
+}
+
 void sortthree(t_stack **a)
 {
     int first;
@@ -292,20 +312,118 @@ void sortthree(t_stack **a)
     }
 }
 
+t_stack *min_finder(t_stack *lst)
+{
+    int min;
+    t_stack *tmp;
+
+    min = lst->number;
+    tmp = lst;
+    while (lst)
+    {
+        if (lst->number < min)
+        {
+            min = lst->number;
+            tmp = lst;
+        }
+        lst = lst->next;
+    }
+    return (tmp);
+}
+
+t_stack *max_finder(t_stack *lst)
+{
+    int max;
+    t_stack *tmp;
+
+    max = lst->number;
+    tmp = lst;
+    while (lst)
+    {
+        if (lst->number > max)
+        {
+            max = lst->number;
+            tmp = lst;
+        }
+        lst = lst->next;
+    }
+    return (tmp);
+}
+
 void sortall(t_stack **a, t_stack **b)
 {
-    t_stack *tmp;
+    t_stack *tmp_a;
+    t_stack *tmp_b;
+    t_stack *move;
+    t_stack *max;
+    t_stack *min;
+    int     min_cost;
     
-    while (ft_stacksize(*a) >= 3 && ft_stacksize(*b) <= 2)
-    {
+    while (set_index_stacksize(a) > 3 && set_index_stacksize(b) < 2)
         pb(a, b);
+    while (set_index_stacksize(a))
+    {
+        tmp_a = *a;
+        while (tmp_a)
+        {
+            set_index_stacksize(b);
+            tmp_b = *b;
+            while (tmp_b)
+            {
+                if (tmp_b->prev == NULL)
+                {
+                    if (tmp_a->number > tmp_b->number && tmp_a->number < ft_stacklast(*b)->number)
+                        tmp_a->target = tmp_b->index;
+                }
+                else 
+                {
+                    if (tmp_a->number > tmp_b->number && tmp_a->number < tmp_b->prev->number)
+                        tmp_a->target = tmp_b->index;
+                }
+                tmp_b = tmp_b->next;
+            }
+            if (tmp_a->target == -1)
+            {
+                max = max_finder(*b);
+                min = min_finder(*b);
+                if (tmp_a->number > max->number)
+                    tmp_a->target = max->index;
+                else if (tmp_a->number < min->number)
+                    tmp_a->target = min->index;
+            }
+            printf("%d\n", tmp_a->number);
+            tmp_a = tmp_a->next;
+        }
+        tmp_a = *a;
+        min_cost = tmp_a->index + tmp_a->target;
+        move = tmp_a;
+        while (tmp_a)
+        {
+            if (min_cost > tmp_a->index + tmp_a->target)
+            {
+                min_cost = tmp_a->index + tmp_a->target;
+                move = tmp_a;
+            }
+            tmp_a = tmp_a->next;
+        }
+        while (move->index > 0)
+        {
+            ra(a);
+            move->index--;
+        }
+        while (move->target > 0)
+        {
+            rb(b);
+            move->target--;
+        }
         pb(a, b);
     }
-    while (ft_stacksize(*a) >= 3)
-    {
-        tmp = *b;
-        if ((*a)->number > 
-    }
+    // while (set_index_stacksize(a) >= 3)
+    // {
+    //     tmp_a = *a;
+    //     set_index_stacksize(b);
+        
+    // }
 }
 
 int main(int ac, char **av)
@@ -330,18 +448,20 @@ int main(int ac, char **av)
             }
         }
         init_stack(av, a);
-        pb(a, b);
-        pb(a, b);
-        pb(a, b);
-        printf("%d\n", ft_stacksize(*a));
+        sortall(a, b);
+        write(1, "ok\n", 3);
         while (*b)
         {
             printf("b: %d\n", (*b)->number);
+            printf("b_index: %d\n", (*b)->index);
+            printf("b_target: %d\n", (*b)->target);
             (*b) = (*b)->next;
         }
         while (*a)
         {
             printf("a: %d\n", (*a)->number);
+            printf("a_index: %d\n", (*a)->index);
+            printf("a_target: %d\n", (*a)->target);
             (*a) = (*a)->next;
         }
         free(a);
