@@ -24,12 +24,8 @@ FILS = $(FILE:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(LIBFTNAME)
-	$(CC) $(CFLAGS) $(FILE)
-	$(CC) $(LIBFTNAME) $(FILS) -o $(NAME)
-
-$(LIBFTNAME): $(OBJS)
-	$(AR) $(LIBFTNAME) $(OBJS)
+$(NAME):
+	$(CC) $(CFLAGS) $(FILE) $(OPTION) -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(OPTION) -c $< -o $@

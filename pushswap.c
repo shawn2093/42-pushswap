@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/16 17:11:47 by long             ###   ########.fr       */
+/*   Updated: 2023/12/16 23:44:30 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,7 +369,19 @@ void sortall(t_stack **a, t_stack **b)
     {
         while (set_index_stacksize(a) > 3 && set_index_stacksize(b) < 2)
             pb(a, b);
-        while (set_index_stacksize(a))
+        len_b = set_index_stacksize(b);
+        max = max_finder(*b);
+        while (max->index > 0 && max->index <= len_b / 2)
+        {
+            rb(b);
+            max->index--;
+        }
+        while (max->index > len_b / 2 && max->index <= len_b)
+        {
+            rrb(b);
+            max->index++;
+        }
+        while (set_index_stacksize(a) > 3)
         {
             len_a = set_index_stacksize(a);
             tmp_a = *a;
@@ -417,10 +429,12 @@ void sortall(t_stack **a, t_stack **b)
                     move = tmp_a;
                 }
                 if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
-                if (min_cost > move_a + move_b)
                 {
-                    min_cost = move_a + move_b;
-                    move = tmp_a;
+                    if (min_cost > move_a + move_b)
+                    {
+                        min_cost = move_a + move_b;
+                        move = tmp_a;
+                    }
                 }
                 tmp_a = tmp_a->next;
             }
@@ -458,20 +472,112 @@ void sortall(t_stack **a, t_stack **b)
             }
             pb(a, b);
         }
-        set_index_stacksize(b);
-        max = max_finder(*b);
-        while (max->index > 0 && max->index <= len_b / 2)
-        {
-            rb(b);
-            max->index--;
-        }
-        while (max->index > len_b / 2 && max->index <= len_b)
-        {
-            rrb(b);
-            max->index++;
-        }
+        sortthree(a);
         while (set_index_stacksize(b))
+        {
+            len_b = set_index_stacksize(b);
+            tmp_b = *b;
+            while (tmp_b)
+            {
+                len_a = set_index_stacksize(a);
+                tmp_a = *a;
+                while (tmp_a)
+                {
+                    if (tmp_a->prev == NULL)
+                    {
+                        if (tmp_b->number < tmp_a->number && tmp_b->number > ft_stacklast(*a)->number)
+                            tmp_b->target = tmp_a->index;
+                    }
+                    else 
+                    {
+                        if (tmp_b->number < tmp_a->number && tmp_b->number > tmp_a->prev->number)
+                            tmp_b->target = tmp_a->index;
+                    }
+                    tmp_a = tmp_a->next;
+                }
+                if (tmp_b->target == -1)
+                {
+                    max = max_finder(*a);
+                    min = min_finder(*a);
+                    if (tmp_b->number > max->number || tmp_b->number < min->number)
+                        tmp_b->target = min->index;
+                }
+                tmp_b = tmp_b->next;
+            }
+            tmp_b = *b;
+            move_a = MIN(tmp_b->target, len_a - tmp_b->target);
+            move_b = MIN(tmp_b->index, len_b - tmp_b->index);
+            min_cost = MAX(move_a, move_b);
+            if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+                min_cost = move_a + move_b;
+            move = tmp_b;
+            while (tmp_b)
+            {
+                move_a = MIN(tmp_b->target, len_a - tmp_b->target);
+                move_b = MIN(tmp_b->index, len_b - tmp_b->index);
+                if (min_cost > MAX(move_a, move_b))
+                {
+                    min_cost = MAX(move_a, move_b);
+                    move = tmp_b;
+                }
+                if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+                {
+                    if (min_cost > move_a + move_b)
+                    {
+                        min_cost = move_a + move_b;
+                        move = tmp_b;
+                    }
+                }
+                tmp_b = tmp_b->next;
+            }
+            if (move->index > len_b / 2 && move->target <= len_a / 2)
+            {
+                while (move->index++ < len_b)
+                    rrb(b);
+                while (move->target-- > 0)
+                    ra(a);
+            }
+            else if (move->index <= len_b / 2 && move->target > len_a / 2)
+            {
+                while (move->index-- > 0)
+                    rb(b);
+                while (move->target++ < len_a)
+                    rra(a);
+            }
+            else if (move->index <= len_b / 2 && move->target <= len_a / 2)
+            {
+                while (move->index-- > 0 && move->target-- > 0)
+                    rr(a, b);
+                while (move->index-- > 0)
+                    rb(b);
+                while (move->target-- > 0)
+                    ra(a);
+            }
+            else if (move->index > len_b / 2 && move->target > len_a / 2)
+            {
+                while (move->index++ < len_b && move->target++ < len_a)
+                    rrr(a, b);
+                while (move->index++ < len_b)
+                    rrb(b);
+                while (move->target++ < len_a)
+                    rra(a);
+            }
             pa(a, b);
+        }
+        // set_index_stacksize(b);
+        // max = max_finder(*b);
+        // while (max->index > 0 && max->index <= len_b / 2)
+        // {
+        //     rb(b);
+        //     max->index--;
+        // }
+        // while (max->index > len_b / 2 && max->index <= len_b)
+        // {
+        //     rrb(b);
+        //     max->index++;
+        // }
+        // while (set_index_stacksize(b))
+        //     pa(a, b);
     }
 }
 
@@ -509,332 +615,22 @@ int main(int ac, char **av)
         init_stack(av, a);
         if (ac != 2)
             sortall(a, b);
-        while (*b)
-        {
-            printf("b: %d\n", (*b)->number);
-            printf("b_index: %d\n", (*b)->index);
-            printf("b_target: %d\n", (*b)->target);
-            (*b) = (*b)->next;
-        }
-        while (*a)
-        {
-            printf("a: %d\n", (*a)->number);
-            printf("a_index: %d\n", (*a)->index);
-            printf("a_target: %d\n", (*a)->target);
-            (*a) = (*a)->next;
-        }
+        // while (*b)
+        // {
+        //     printf("b: %d\n", (*b)->number);
+        //     printf("b_index: %d\n", (*b)->index);
+        //     printf("b_target: %d\n", (*b)->target);
+        //     (*b) = (*b)->next;
+        // }
+        // while (*a)
+        // {
+        //     printf("a: %d\n", (*a)->number);
+        //     printf("a_index: %d\n", (*a)->index);
+        //     printf("a_target: %d\n", (*a)->target);
+        //     (*a) = (*a)->next;
+        // }
         free(a);
         free(b);
     }
     return (0);
 }
-
-// pb
-// pb
-// rb
-// pb
-// ra
-// pb
-// rb
-// rb
-// pb
-// pb
-// rb
-// pb
-// pb
-// pb
-// ra
-// pb
-// rb
-// rb
-// rb
-// rb
-// pb
-// ra
-// rb
-// pb
-// rb
-// pb
-// rb
-// rb
-// pb
-// rb
-// pb
-// rb
-// rb
-// pb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// pb
-// rb
-// pb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// rb
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-
-// pb
-// pb
-// rra
-// rra
-// rb
-// pb
-// rra
-// pb
-// rra
-// pb
-// rra
-// pb
-// rra
-// rra
-// pb
-// rra
-// rra
-// rb
-// pb
-// rrr
-// rra
-// rra
-// pb
-// rrr
-// rrb
-// rrb
-// pb
-// rra
-// rb
-// rb
-// rb
-// rb
-// pb
-// rrr
-// pb
-// rra
-// rb
-// rb
-// rb
-// pb
-// rrr
-// rrb
-// rrb
-// rrb
-// pb
-// rrr
-// rrb
-// rrb
-// rrb
-// pb
-// ra
-// ra
-// rrb
-// pb
-// ra
-// pb
-// rb
-// rb
-// rb
-// pb
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-
-
-// pb
-// pb
-// rra
-// rra
-// rb
-// pb
-// rra
-// pb
-// rra
-// pb
-// rra
-// pb
-// rra
-// rra
-// pb
-// rra
-// rra
-// rb
-// pb
-// rrr
-// rra
-// rra
-// pb
-// rrr
-// rrb
-// rrb
-// pb
-// rra
-// rb
-// rb
-// rb
-// rb
-// pb
-// rrr
-// pb
-// rra
-// rb
-// rb
-// rb
-// pb
-// rrr
-// rrb
-// rrb
-// rrb
-// pb
-// rrr
-// rrb
-// rrb
-// rrb
-// pb
-// ra
-// ra
-// rrb
-// pb
-// ra
-// pb
-// rb
-// rb
-// rb
-// pb
-// rrb
-// rrb
-// rrb
-// rrb
-// rrb
-// rrb
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-
-// pb
-// pb
-// rra
-// rb
-// pb
-// ra
-// rrb
-// pb
-// rra
-// rb
-// rb
-// pb
-// rra
-// rb
-// pb
-// rrb
-// pb
-// rra
-// rb
-// rb
-// pb
-// rb
-// pb
-// rrr
-// pb
-// pb
-// rra
-// rb
-// pb
-// rra
-// rb
-// pb
-// rrr
-// pb
-// rra
-// rb
-// pb
-// rb
-// rb
-// pb
-// ra
-// rrb
-// rrb
-// pb
-// rb
-// pb
-// rrb
-// rrb
-// rrb
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
-// pa
