@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/16 03:04:20 by long             ###   ########.fr       */
+/*   Updated: 2023/12/16 17:11:47 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,6 @@ void ss(t_stack **a, t_stack **b)
 int set_index_stacksize(t_stack **a)
 {
     int     i;
-    int     mid;
     t_stack *tmp;
 
     i = 0;
@@ -270,13 +269,13 @@ int set_index_stacksize(t_stack **a)
         i++;
         tmp = tmp->next;
     }
-    tmp = ft_stacklast(*a);
-    mid = 0;
-    while (++mid < i / 2)
-    {
-        tmp->index = -mid;
-        tmp = tmp->prev;
-    }    
+    // tmp = ft_stacklast(*a);
+    // mid = 0;
+    // while (++mid < i / 2)
+    // {
+    //     tmp->index = -mid;
+    //     tmp = tmp->prev;
+    // }    
     return (i);
 }
 
@@ -354,6 +353,10 @@ void sortall(t_stack **a, t_stack **b)
     t_stack *max;
     t_stack *min;
     int     min_cost;
+    int     len_a;
+    int     len_b;
+    int     move_a;
+    int     move_b;
     
     if (set_index_stacksize(a) == 3)
         sortthree(a);
@@ -368,10 +371,11 @@ void sortall(t_stack **a, t_stack **b)
             pb(a, b);
         while (set_index_stacksize(a))
         {
+            len_a = set_index_stacksize(a);
             tmp_a = *a;
             while (tmp_a)
             {
-                set_index_stacksize(b);
+                len_b = set_index_stacksize(b);
                 tmp_b = *b;
                 while (tmp_b)
                 {
@@ -397,79 +401,71 @@ void sortall(t_stack **a, t_stack **b)
                 tmp_a = tmp_a->next;
             }
             tmp_a = *a;
-            if ((tmp_a->index > 0 && tmp_a->target > 0) || (tmp_a->index < 0 && tmp_a->target < 0))
-                min_cost = MAX(ABS(tmp_a->index), ABS(tmp_a->target));
-            else
-                min_cost = ABS(tmp_a->target - tmp_a->index);
+            move_a = MIN(tmp_a->index, len_a - tmp_a->index);
+            move_b = MIN(tmp_a->target, len_b - tmp_a->target);
+            min_cost = MAX(move_a, move_b);
+            if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+                min_cost = move_a + move_b;
             move = tmp_a;
             while (tmp_a)
             {
-                if ((tmp_a->index > 0 && tmp_a->target > 0) || (tmp_a->index < 0 && tmp_a->target < 0))
+                move_a = MIN(tmp_a->index, len_a - tmp_a->index);
+                move_b = MIN(tmp_a->target, len_b - tmp_a->target);
+                if (min_cost > MAX(move_a, move_b))
                 {
-                    if (min_cost > MAX(ABS(tmp_a->index), ABS(tmp_a->target)))
-                    {
-                        min_cost = MAX(ABS(tmp_a->index), ABS(tmp_a->target));
-                        move = tmp_a;
-                    }
+                    min_cost = MAX(move_a, move_b);
+                    move = tmp_a;
                 }
-                else
+                if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+                if (min_cost > move_a + move_b)
                 {
-                    if (min_cost > ABS(tmp_a->target - tmp_a->index))
-                    {
-                        min_cost = ABS(tmp_a->target - tmp_a->index);
-                        move = tmp_a;
-                    }
+                    min_cost = move_a + move_b;
+                    move = tmp_a;
                 }
                 tmp_a = tmp_a->next;
             }
-            while (move->index > 0 && move->target > 0)
+            if (move->index > len_a / 2 && move->target <= len_b / 2)
             {
-                rr(a, b);
-                move->index--;
-                move->target--;
-            }
-            while (move->index < 0 && move->target < 0)
-            {
-                rrr(a, b);
-                move->index++;
-                move->target++;
-            }
-            while (move->index != 0)
-            {
-                if (move->index > 0)
-                {
-                    ra(a);
-                    move->index--;
-                }
-                else
-                {
+                while (move->index++ < len_a)
                     rra(a);
-                    move->index++;
-                }
-            }
-            while (move->target != 0)
-            {
-                if (move->target > 0)
-                {
+                while (move->target-- > 0)
                     rb(b);
-                    move->target--;
-                }
-                else
-                {
+            }
+            else if (move->index <= len_a / 2 && move->target > len_b / 2)
+            {
+                while (move->index-- > 0)
+                    ra(a);
+                while (move->target++ < len_b)
                     rrb(b);
-                    move->target++;
-                }
+            }
+            else if (move->index <= len_a / 2 && move->target <= len_b / 2)
+            {
+                while (move->index-- > 0 && move->target-- > 0)
+                    rr(a, b);
+                while (move->index-- > 0)
+                    ra(a);
+                while (move->target-- > 0)
+                    rb(b);
+            }
+            else if (move->index > len_a / 2 && move->target > len_b / 2)
+            {
+                while (move->index++ < len_a && move->target++ < len_b)
+                    rrr(a, b);
+                while (move->index++ < len_a)
+                    rra(a);
+                while (move->target++ < len_b)
+                    rrb(b);
             }
             pb(a, b);
         }
         set_index_stacksize(b);
         max = max_finder(*b);
-        while (max->index > 0)
+        while (max->index > 0 && max->index <= len_b / 2)
         {
             rb(b);
             max->index--;
         }
-        while (max->index < 0)
+        while (max->index > len_b / 2 && max->index <= len_b)
         {
             rrb(b);
             max->index++;
@@ -477,12 +473,6 @@ void sortall(t_stack **a, t_stack **b)
         while (set_index_stacksize(b))
             pa(a, b);
     }
-    // while (set_index_stacksize(a) >= 3)
-    // {
-    //     tmp_a = *a;
-    //     set_index_stacksize(b);
-        
-    // }
 }
 
 int main(int ac, char **av)
@@ -759,6 +749,74 @@ int main(int ac, char **av)
 // rrb
 // rrb
 // rrb
+// rrb
+// rrb
+// rrb
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+// pa
+
+// pb
+// pb
+// rra
+// rb
+// pb
+// ra
+// rrb
+// pb
+// rra
+// rb
+// rb
+// pb
+// rra
+// rb
+// pb
+// rrb
+// pb
+// rra
+// rb
+// rb
+// pb
+// rb
+// pb
+// rrr
+// pb
+// pb
+// rra
+// rb
+// pb
+// rra
+// rb
+// pb
+// rrr
+// pb
+// rra
+// rb
+// pb
+// rb
+// rb
+// pb
+// ra
+// rrb
+// rrb
+// pb
+// rb
+// pb
 // rrb
 // rrb
 // rrb

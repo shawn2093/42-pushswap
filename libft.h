@@ -6,13 +6,14 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 14:40:39 by long              #+#    #+#             */
-/*   Updated: 2023/12/16 02:28:52 by long             ###   ########.fr       */
+/*   Updated: 2023/12/16 16:33:10 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # define ABS(x) (x < 0) ? -x : x
+# define MIN(x, y) (x < y) ? x : y
 # define MAX(x, y) (x < y) ? y : x
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 2
