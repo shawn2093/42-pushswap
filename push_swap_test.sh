@@ -3253,6 +3253,7 @@ if [ $S == "OK" ]; then
 	control=2
 else
 	printf "${RED}$cont .[KO]${DEF_COLOR}";
+	printf "${ARG}";
 	control=3
 fi
 N=$(./push_swap $ARG | wc -l)
@@ -3380,7 +3381,7 @@ if [ $S == "OK" ]; then
 	printf "${GREEN}$cont .[OK]${DEF_COLOR}";
 	control=2
 else
-	printf "${RED}$cont .[KO]${DEF_COLOR}";
+	printf "${RED}$cont .[KO]${DEF_COLOR} ${ARG}";
 	control=3
 fi
 N=$(./push_swap $ARG | wc -l)

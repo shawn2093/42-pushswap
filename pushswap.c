@@ -6,11 +6,124 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/16 23:44:30 by long             ###   ########.fr       */
+/*   Updated: 2023/12/17 23:59:14 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
+static int	is_sep(char c, char set)
+{
+	if (c == set)
+		return (1);
+	return (0);
+}
+
+static int	word_count(char const *str, char set)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		while (str[i] && is_sep(str[i], set))
+			i++;
+		if (str[i] && !is_sep(str[i], set))
+			count++;
+		while (str[i] && !is_sep(str[i], set))
+			i++;
+	}
+	return (count);
+}
+
+static char	*fill_letters(char const *str, char set)
+{
+	char	*newstr;
+	int		i;
+
+	i = 0;
+	while (!is_sep(str[i], set) && str[i])
+		i++;
+	newstr = (char *)malloc((i + 1) * sizeof(char));
+	if (!newstr)
+		return (0);
+	i = 0;
+	while (!is_sep(str[i], set) && str[i])
+	{
+		newstr[i] = str[i];
+		i++;
+	}
+	newstr[i] = '\0';
+	return (newstr);
+}
+
+char	**ft_split(char const *s, char set)
+{
+	char	**split_str;
+	int		count;
+	int		i;
+
+	if (!s)
+		return (NULL);
+	i = 0;
+	count = word_count(s, set);
+	split_str = (char **)malloc((count + 1) * sizeof(char *));
+	if (!split_str)
+		return (0);
+	while (*s)
+	{
+		while (*s && is_sep(*s, set))
+			s++;
+		if (*s)
+		{
+			split_str[i] = fill_letters(s, set);
+			i++;
+			while (*s && !is_sep(*s, set))
+				s++;
+		}
+	}
+	split_str[i] = 0;
+	return (split_str);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	count;
+
+	count = 0;
+	while (s[count] != '\0')
+		count++;
+	return (count);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	size_t	total_len;
+	char	*str;
+	int		i;
+	int		j;
+
+	if (s1 && !s2)
+		return ((char *)s1);
+	if (!s1 && s2)
+		return ((char *)s2);
+	if (!s1 && !s2)
+		return (NULL);
+	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
+	str = (char *)malloc(total_len * sizeof(char));
+	if (!str)
+		return (NULL);
+	i = -1;
+	j = -1;
+	while (s1[++i])
+		str[i] = s1[i];
+	while (s2[++j])
+		str[i++] = s2[j];
+	str[i] = '\0';
+	return (str);
+}
 
 int	ft_atoi(const char *str)
 {
@@ -36,10 +149,98 @@ int	ft_atoi(const char *str)
 	return (res * minus_num);
 }
 
+char	*ft_strdup(const char *s1)
+{
+	int		i;
+	int		j;
+	char	*t;
+
+	i = 0;
+	j = -1;
+	while (s1[i])
+		i++;
+	t = malloc((i + 1) * sizeof(char));
+	if (!t)
+		return (0);
+	while (s1[++j])
+	{
+		t[j] = s1[j];
+	}
+	t[j] = '\0';
+	return (t);
+}
+
+static int	numlen(int n)
+{
+	int	count;
+
+	count = 0;
+	if (n < 0)
+	{
+		n *= -1;
+		count++;
+	}
+	while (n != 0)
+	{
+		count++;
+		n /= 10;
+	}
+	return (count);
+}
+
+char	*ft_itoa(int n)
+{
+	int		len;
+	char	*str;
+	int		start;
+
+	if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	if (n == 0)
+		return (ft_strdup("0"));
+	len = numlen(n);
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (0);
+	str[len] = '\0';
+	start = 0;
+	if (n < 0)
+	{
+		str[start++] = '-';
+		n *= -1;
+	}
+	while (--len >= start)
+	{
+		str[len] = n % 10 + '0';
+		n = n / 10;
+	}
+	return (str);
+}
+
 int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (1);
+	return (0);
+}
+
+int	ft_strncmp(const char *s11, const char *s22, size_t n)
+{
+	size_t	count;
+	char	*s1;
+	char	*s2;
+
+	count = 0;
+	s1 = (char *)s11;
+	s2 = (char *)s22;
+	while (s1[count] != '\0' && s2[count] != '\0' && count < n)
+	{
+		if (s1[count] != s2[count])
+			return ((unsigned char)s1[count] - (unsigned char)s2[count]);
+		count++;
+	}
+	if (count != n)
+		return ((unsigned char)s1[count] - (unsigned char)s2[count]);
 	return (0);
 }
 
@@ -104,11 +305,23 @@ void init_stack(char **av, t_stack **a)
     t_stack *tmp;
 
     i = 0;
-    tmp = (t_stack *) malloc(sizeof(t_stack));
+    // tmp = (t_stack *) malloc(sizeof(t_stack));
     while(av[++i])
     {
         tmp = ft_stacknew(ft_atoi(av[i]));
         ft_stackadd_back(a, tmp);
+    }
+}
+
+void free_stack(t_stack **a)
+{
+    t_stack *tmp;
+
+    while (*a)
+    {
+        tmp = *a;
+        *a = (*a)->next;
+        free(tmp);
     }
 }
 
@@ -125,7 +338,7 @@ void pa(t_stack **a, t_stack **b)
         *a = tmp;
     else
         ft_stackadd_front(a, tmp);
-    printf("pa\n");
+    write(1, "pa\n", 3);
 }
 
 void pb(t_stack **a, t_stack **b)
@@ -141,7 +354,7 @@ void pb(t_stack **a, t_stack **b)
         *b = tmp;
     else
         ft_stackadd_front(b, tmp);
-    printf("pb\n");
+    write(1, "pb\n", 3);
 }
 
 void ra(t_stack **a)
@@ -269,13 +482,6 @@ int set_index_stacksize(t_stack **a)
         i++;
         tmp = tmp->next;
     }
-    // tmp = ft_stacklast(*a);
-    // mid = 0;
-    // while (++mid < i / 2)
-    // {
-    //     tmp->index = -mid;
-    //     tmp = tmp->prev;
-    // }    
     return (i);
 }
 
@@ -345,6 +551,39 @@ t_stack *max_finder(t_stack *lst)
     return (tmp);
 }
 
+int is_sorted(t_stack *lst)
+{
+    t_stack *min;
+    t_stack *max;
+    t_stack *last;
+    t_stack *tmp;
+
+    min = min_finder(lst);
+    max = max_finder(lst);
+    last = ft_stacklast(lst);
+    tmp = min;
+    while (tmp != last)
+    {
+        if (tmp->next->number < tmp->number)
+            return (0);
+        tmp = tmp->next;
+    }
+    if (min == lst && max == last)
+        return (1);
+    if (last->number > lst->number)
+        return (0);
+    tmp = lst;
+    while (tmp != max)
+    {
+        if (tmp->next->number < tmp->number)
+            return (0);
+        tmp = tmp->next;
+    }
+    if (tmp->next != min)
+        return (0);
+    return (1);
+}
+
 void sortall(t_stack **a, t_stack **b)
 {
     t_stack *tmp_a;
@@ -352,7 +591,6 @@ void sortall(t_stack **a, t_stack **b)
     t_stack *move;
     t_stack *max;
     t_stack *min;
-    int     min_cost;
     int     len_a;
     int     len_b;
     int     move_a;
@@ -369,19 +607,19 @@ void sortall(t_stack **a, t_stack **b)
     {
         while (set_index_stacksize(a) > 3 && set_index_stacksize(b) < 2)
             pb(a, b);
-        len_b = set_index_stacksize(b);
-        max = max_finder(*b);
-        while (max->index > 0 && max->index <= len_b / 2)
-        {
-            rb(b);
-            max->index--;
-        }
-        while (max->index > len_b / 2 && max->index <= len_b)
-        {
-            rrb(b);
-            max->index++;
-        }
-        while (set_index_stacksize(a) > 3)
+        // len_b = set_index_stacksize(b);
+        // max = max_finder(*b);
+        // while (max->index > 0 && max->index <= len_b / 2)
+        // {
+        //     rb(b);
+        //     max->index--;
+        // }
+        // while (max->index > len_b / 2 && max->index <= len_b)
+        // {
+        //     rrb(b);
+        //     max->index++;
+        // }
+        while (set_index_stacksize(a) > 3  && !is_sorted(*a))
         {
             len_a = set_index_stacksize(a);
             tmp_a = *a;
@@ -412,40 +650,64 @@ void sortall(t_stack **a, t_stack **b)
                 }
                 tmp_a = tmp_a->next;
             }
+            // tmp_a = *a;
+            // move_a = MIN(tmp_a->index, len_a - tmp_a->index);
+            // move_b = MIN(tmp_a->target, len_b - tmp_a->target);
+            // min_cost = MAX(move_a, move_b);
+            // if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+            //     min_cost = move_a + move_b;
+            // move = tmp_a;
+            // while (tmp_a)
+            // {
+            //     move_a = MIN(tmp_a->index, len_a - tmp_a->index);
+            //     move_b = MIN(tmp_a->target, len_b - tmp_a->target);
+            //     if (min_cost > MAX(move_a, move_b))
+            //     {
+            //         min_cost = MAX(move_a, move_b);
+            //         move = tmp_a;
+            //     }
+            //     if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+            //     {
+            //         if (min_cost > move_a + move_b)
+            //         {
+            //             min_cost = move_a + move_b;
+            //             move = tmp_a;
+            //         }
+            //     }
+            //     tmp_a = tmp_a->next;
+            // }
             tmp_a = *a;
-            move_a = MIN(tmp_a->index, len_a - tmp_a->index);
-            move_b = MIN(tmp_a->target, len_b - tmp_a->target);
-            min_cost = MAX(move_a, move_b);
-            if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
-                min_cost = move_a + move_b;
-            move = tmp_a;
             while (tmp_a)
             {
                 move_a = MIN(tmp_a->index, len_a - tmp_a->index);
                 move_b = MIN(tmp_a->target, len_b - tmp_a->target);
-                if (min_cost > MAX(move_a, move_b))
-                {
-                    min_cost = MAX(move_a, move_b);
-                    move = tmp_a;
-                }
+                tmp_a->cost = MAX(move_a, move_b);
                 if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
-                {
-                    if (min_cost > move_a + move_b)
-                    {
-                        min_cost = move_a + move_b;
-                        move = tmp_a;
-                    }
-                }
+                    tmp_a->cost = move_a + move_b;
                 tmp_a = tmp_a->next;
             }
-            if (move->index > len_a / 2 && move->target <= len_b / 2)
+            tmp_a = *a;
+            move = tmp_a;
+            while (tmp_a)
+            {
+                if (tmp_a->cost < move->cost)
+                    move = tmp_a;
+                tmp_a = tmp_a->next;
+            }
+            // printf("move->number: %d\n", move->number);
+            // printf("move->index: %d\n", move->index);
+            // printf("move->target: %d\n", move->target);
+            // printf("move->cost: %d\n", move->cost);
+            // printf("len_a: %d\n", len_a);
+            // printf("len_b: %d\n", len_b);
+            if (move->index >= len_a / 2 && move->target <= len_b / 2)
             {
                 while (move->index++ < len_a)
                     rra(a);
                 while (move->target-- > 0)
                     rb(b);
             }
-            else if (move->index <= len_a / 2 && move->target > len_b / 2)
+            else if (move->index <= len_a / 2 && move->target >= len_b / 2)
             {
                 while (move->index-- > 0)
                     ra(a);
@@ -454,17 +716,25 @@ void sortall(t_stack **a, t_stack **b)
             }
             else if (move->index <= len_a / 2 && move->target <= len_b / 2)
             {
-                while (move->index-- > 0 && move->target-- > 0)
+                while (move->index > 0 && move->target > 0)
+                {
                     rr(a, b);
+                    move->index--;
+                    move->target--;
+                }
                 while (move->index-- > 0)
                     ra(a);
                 while (move->target-- > 0)
                     rb(b);
             }
-            else if (move->index > len_a / 2 && move->target > len_b / 2)
+            else if (move->index >= len_a / 2 && move->target >= len_b / 2)
             {
-                while (move->index++ < len_a && move->target++ < len_b)
+                while (move->index < len_a && move->target < len_b)
+                {
                     rrr(a, b);
+                    move->index++;
+                    move->target++;
+                }
                 while (move->index++ < len_a)
                     rra(a);
                 while (move->target++ < len_b)
@@ -472,7 +742,8 @@ void sortall(t_stack **a, t_stack **b)
             }
             pb(a, b);
         }
-        sortthree(a);
+        if (set_index_stacksize(a) == 3)
+            sortthree(a);
         while (set_index_stacksize(b))
         {
             len_b = set_index_stacksize(b);
@@ -504,30 +775,48 @@ void sortall(t_stack **a, t_stack **b)
                 }
                 tmp_b = tmp_b->next;
             }
+            // tmp_b = *b;
+            // move_a = MIN(tmp_b->target, len_a - tmp_b->target);
+            // move_b = MIN(tmp_b->index, len_b - tmp_b->index);
+            // min_cost = MAX(move_a, move_b);
+            // if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+            //     min_cost = move_a + move_b;
+            // move = tmp_b;
+            // while (tmp_b)
+            // {
+            //     move_a = MIN(tmp_b->target, len_a - tmp_b->target);
+            //     move_b = MIN(tmp_b->index, len_b - tmp_b->index);
+            //     if (min_cost > MAX(move_a, move_b))
+            //     {
+            //         min_cost = MAX(move_a, move_b);
+            //         move = tmp_b;
+            //     }
+            //     if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+            //     {
+            //         if (min_cost > move_a + move_b)
+            //         {
+            //             min_cost = move_a + move_b;
+            //             move = tmp_b;
+            //         }
+            //     }
+            //     tmp_b = tmp_b->next;
+            // }
             tmp_b = *b;
-            move_a = MIN(tmp_b->target, len_a - tmp_b->target);
-            move_b = MIN(tmp_b->index, len_b - tmp_b->index);
-            min_cost = MAX(move_a, move_b);
-            if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
-                min_cost = move_a + move_b;
-            move = tmp_b;
             while (tmp_b)
             {
                 move_a = MIN(tmp_b->target, len_a - tmp_b->target);
                 move_b = MIN(tmp_b->index, len_b - tmp_b->index);
-                if (min_cost > MAX(move_a, move_b))
-                {
-                    min_cost = MAX(move_a, move_b);
-                    move = tmp_b;
-                }
+                tmp_b->cost = MAX(move_a, move_b);
                 if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
-                {
-                    if (min_cost > move_a + move_b)
-                    {
-                        min_cost = move_a + move_b;
-                        move = tmp_b;
-                    }
-                }
+                    tmp_b->cost = move_a + move_b;
+                tmp_b = tmp_b->next;
+            }
+            tmp_b = *b;
+            move = tmp_b;
+            while (tmp_b->next)
+            {
+                if (tmp_b->next->cost < move->cost)
+                    move = tmp_b->next;
                 tmp_b = tmp_b->next;
             }
             if (move->index > len_b / 2 && move->target <= len_a / 2)
@@ -546,8 +835,12 @@ void sortall(t_stack **a, t_stack **b)
             }
             else if (move->index <= len_b / 2 && move->target <= len_a / 2)
             {
-                while (move->index-- > 0 && move->target-- > 0)
+                while (move->index > 0 && move->target > 0)
+                {
                     rr(a, b);
+                    move->index--;
+                    move->target--;
+                }
                 while (move->index-- > 0)
                     rb(b);
                 while (move->target-- > 0)
@@ -555,8 +848,12 @@ void sortall(t_stack **a, t_stack **b)
             }
             else if (move->index > len_b / 2 && move->target > len_a / 2)
             {
-                while (move->index++ < len_b && move->target++ < len_a)
+                while (move->index < len_b && move->target < len_a)
+                {
                     rrr(a, b);
+                    move->index++;
+                    move->target++;
+                }
                 while (move->index++ < len_b)
                     rrb(b);
                 while (move->target++ < len_a)
@@ -564,20 +861,18 @@ void sortall(t_stack **a, t_stack **b)
             }
             pa(a, b);
         }
-        // set_index_stacksize(b);
-        // max = max_finder(*b);
-        // while (max->index > 0 && max->index <= len_b / 2)
-        // {
-        //     rb(b);
-        //     max->index--;
-        // }
-        // while (max->index > len_b / 2 && max->index <= len_b)
-        // {
-        //     rrb(b);
-        //     max->index++;
-        // }
-        // while (set_index_stacksize(b))
-        //     pa(a, b);
+        set_index_stacksize(a);
+        min = min_finder(*a);
+        while (min->index > 0 && min->index <= len_a / 2)
+        {
+            ra(a);
+            min->index--;
+        }
+        while (min->index > len_a / 2 && min->index <= len_a)
+        {
+            rra(a);
+            min->index++;
+        }
     }
 }
 
@@ -585,36 +880,87 @@ int main(int ac, char **av)
 {
     int     i;
     int     j;
+    int     tmp;
+    char    *str;
+    char    *str1;
+    char    *str2;
+    char    *str3;
+    char    **new_av;
     t_stack **a;
     t_stack **b;
 
-    i = 0;
+    i = -1;
+    // str3= NULL;
     if (ac >= 2)
     {
-        while (++i < ac)
-        {
-            j = -1;
-            while(av[i][++j])
-            {
-                if (!ft_isdigit(av[i][j]))
-                    return(write(1, "Error\n", 6));
-            }
-        }
-        i = 0;
+        str = ft_strdup("");
         while(av[++i])
         {
-            j = i;
-            while(av[++j])
+            str1 = ft_strjoin(str, av[i]);
+            free(str);
+            str2 = ft_strjoin(str1, " ");
+            str = ft_strdup(str2);
+            free(str1);
+            free(str2);
+            // str = ft_strjoin(str, av[i]);
+            // str = ft_strjoin(str, " ");
+        }
+        new_av = ft_split(str, ' ');
+        i = 0;
+        while (new_av[++i])
+        {
+            j = -1;
+            while(new_av[i][++j])
             {
-                if (ft_atoi(av[i]) == ft_atoi(av[j]))
-                    return(write(1, "Error\n", 6));
+                if (new_av[i][j] == '-')
+                {
+                    if (j != 0 || new_av[i][j + 1] == 0)
+                        return(write(2, "Error\n", 6));
+                }
+                else
+                {
+                    if (!ft_isdigit(new_av[i][j]))
+                        return(write(2, "Error\n", 6));
+                }
+            }
+            if (!j)
+                return(write(2, "Error\n", 6));
+            (void) tmp;
+            // tmp = ABS(ft_atoi(new_av[i]));
+            // j = ft_strlen(new_av[i]);
+            // while (tmp)
+            // {
+            //     if (new_av[i][--j] != (tmp % 10 + '0'))
+            //         return(write(2, "Error\n", 6));
+            //     tmp = tmp / 10;
+            // }
+            // if (new_av[i+1])
+            //     free(str3);
+            // str3 = ft_itoa(ft_atoi(new_av[i]));
+            // printf("%s\n", str3);
+            // printf("%s\n", str3);
+            str3 = ft_itoa(ft_atoi(new_av[i]));
+            if (ft_strncmp(new_av[i], str3, j) != 0)
+            {
+                free(str3);
+                return(write(2, "Error\n", 6));
+            }
+            // free(str3);
+        }
+        i = 0;
+        while(new_av[++i])
+        {
+            j = i;
+            while(new_av[++j])
+            {
+                if (ft_atoi(new_av[i]) == ft_atoi(new_av[j]))
+                    return(write(2, "Error\n", 6));
             }
         }
         a = (t_stack **)malloc(sizeof(t_stack *));
         b = (t_stack **)malloc(sizeof(t_stack *));
-        init_stack(av, a);
-        if (ac != 2)
-            sortall(a, b);
+        init_stack(new_av, a);
+        sortall(a, b);
         // while (*b)
         // {
         //     printf("b: %d\n", (*b)->number);
@@ -622,15 +968,87 @@ int main(int ac, char **av)
         //     printf("b_target: %d\n", (*b)->target);
         //     (*b) = (*b)->next;
         // }
+        // pb(a, b);
+        // pb(a, b);
+        // t_stack *tmp_a;
+        // t_stack *tmp_b;
+        // t_stack *move;
+        // t_stack *max;
+        // t_stack *min;
+        // int     len_a;
+        // int     len_b;
+        // int     move_a;
+        // int     move_b;
+        // len_a = set_index_stacksize(a);
+        // tmp_a = *a;
+        // while (tmp_a)
+        // {
+        //     len_b = set_index_stacksize(b);
+        //     tmp_b = *b;
+        //     while (tmp_b)
+        //     {
+        //         if (tmp_b->prev == NULL)
+        //         {
+        //             if (tmp_a->number > tmp_b->number && tmp_a->number < ft_stacklast(*b)->number)
+        //                 tmp_a->target = tmp_b->index;
+        //         }
+        //         else 
+        //         {
+        //             if (tmp_a->number > tmp_b->number && tmp_a->number < tmp_b->prev->number)
+        //                 tmp_a->target = tmp_b->index;
+        //         }
+        //         tmp_b = tmp_b->next;
+        //     }
+        //     if (tmp_a->target == -1)
+        //     {
+        //         max = max_finder(*b);
+        //         min = min_finder(*b);
+        //         if (tmp_a->number > max->number || tmp_a->number < min->number)
+        //             tmp_a->target = max->index;
+        //     }
+        //     tmp_a = tmp_a->next;
+        // }
+        // tmp_a = *a;
+        // len_a = set_index_stacksize(a);
+        // len_b = set_index_stacksize(b);
+        // while (tmp_a)
+        // {
+        //     move_a = MIN(tmp_a->index, len_a - tmp_a->index);
+        //     move_b = MIN(tmp_a->target, len_b - tmp_a->target);
+        //     tmp_a->cost = MAX(move_a, move_b);
+        //     if ((move_a > len_a / 2 && move_b < len_b / 2) || (move_a < len_a / 2 && move_b > len_b / 2))
+        //         tmp_a->cost = move_a + move_b;
+        //     tmp_a = tmp_a->next;
+        // }
+        // tmp_a = *a;
+        // move = tmp_a;
+        // while (tmp_a->next)
+        // {
+        //     if (tmp_a->next->cost < move->cost)
+        //         move = tmp_a->next;
+        //     tmp_a = tmp_a->next;
+        // }
+        // printf("move: %d\n", move->number);
+        // printf("%d\n", is_sorted(*a));
+        // if (is_sorted(*a))
+        //     printf("ok\n");
         // while (*a)
         // {
-        //     printf("a: %d\n", (*a)->number);
-        //     printf("a_index: %d\n", (*a)->index);
-        //     printf("a_target: %d\n", (*a)->target);
+        //     printf("%d\n", (*a)->number);
+        //     // printf("a->cost: %d\n", (*a)->cost);
         //     (*a) = (*a)->next;
         // }
-        free(a);
-        free(b);
+        // i = -1;
+        // while (new_av[++i])
+        //     free(new_av[i]);
+        // free(new_av);
+        // free(str);
+        // free(str1);
+        // free_stack(a);
+        // free_stack(b);
+        // free(a);
+        // free(b);
+        // system("leaks push_swap");
     }
     return (0);
 }
