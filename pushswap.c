@@ -6,11 +6,208 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/17 23:59:14 by long             ###   ########.fr       */
+/*   Updated: 2023/12/18 10:01:31 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
+t_gnl	*ft_lstlast_gnl(t_gnl *lst)
+{
+	while (lst)
+	{
+		if (!(lst->next))
+			return (lst);
+		else
+			lst = lst->next;
+	}
+	return (lst);
+}
+
+void	ft_lstadd_back_gnl(t_gnl **lst, t_gnl *new)
+{
+	t_gnl	*tmp;
+
+	if (lst && new)
+	{
+		if (*lst)
+		{
+			tmp = ft_lstlast_gnl(*lst);
+			tmp->next = new;
+		}
+		else
+			*lst = new;
+	}
+}
+
+int	ft_lstsize_gnl(t_gnl *lst)
+{
+	int	count;
+
+	count = 0;
+	while (lst)
+	{
+		lst = lst->next;
+		count++;
+	}
+	return (count);
+}
+
+void	make_new(t_gnl **bufstr, char *str)
+{
+	t_gnl	*new;
+	t_gnl	*tmp;
+
+	new = (t_gnl *)malloc(sizeof(t_gnl));
+	if (!new)
+		return ;
+	new->str = str;
+	new->next = NULL;
+	while (*bufstr)
+	{
+		tmp = (*bufstr)->next;
+		free((*bufstr)->str);
+		free(*bufstr);
+		*bufstr = tmp;
+	}
+	if (*str)
+		*bufstr = new;
+	else
+	{
+		free(str);
+		free(new);
+	}
+}
+
+void	clean_list(t_gnl **bufstr)
+{
+	int		i;
+	int		k;
+	t_gnl	*tmp;
+	char	*str;
+
+	if (!bufstr || !*bufstr)
+		return ;
+	str = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!str)
+		return ;
+	tmp = ft_lstlast_gnl(*bufstr);
+	i = -1;
+	k = 0;
+	while (tmp->str[++i])
+	{
+		if (tmp->str[i] == '\n')
+			break ;
+	}
+	while (tmp->str[i++])
+		str[k++] = tmp->str[i];
+	str[k] = 0;
+	make_new(bufstr, str);
+}
+
+
+char	*fill_letter(t_gnl *bufstr, int len)
+{
+	char	*str;
+	int		i;
+
+	str = (char *)malloc(sizeof(char) * len + 2);
+	if (!str)
+		return (NULL);
+	len = 0;
+	while (bufstr)
+	{
+		i = -1;
+		while (bufstr->str[++i])
+		{
+			str[len] = bufstr->str[i];
+			len++;
+			if (bufstr->str[i] == '\n')
+				break ;
+		}
+		bufstr = bufstr->next;
+	}
+	str[len] = '\0';
+	return (str);
+}
+
+char	*get_line(t_gnl *bufstr)
+{
+	int		count;
+	t_gnl	*tmp;
+	int		i;
+	int		len;
+
+	count = ft_lstsize_gnl(bufstr);
+	tmp = ft_lstlast_gnl(bufstr);
+	i = -1;
+	while (tmp->str[++i])
+	{
+		if (tmp->str[i] == '\n')
+			break ;
+	}
+	len = BUFFER_SIZE * (count - 1) + i;
+	return (fill_letter(bufstr, len));
+}
+
+int	found_nl(t_gnl **bufstr)
+{
+	t_gnl	*tmp;
+	int		i;
+
+	tmp = *bufstr;
+	while (tmp)
+	{
+		i = -1;
+		while (tmp->str[++i])
+		{
+			if (tmp->str[i] == '\n')
+				return (1);
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+void	create_list(int fd, t_gnl **bufstr)
+{
+	char	*str;
+	size_t	buf;
+	t_gnl	*tmp;
+
+	while (!found_nl(bufstr))
+	{
+		str = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (!str)
+			return ;
+		buf = read(fd, str, BUFFER_SIZE);
+		if (!buf)
+		{
+			free(str);
+			return ;
+		}
+		str[buf] = 0;
+		tmp = (t_gnl *)malloc(sizeof(t_gnl));
+		tmp->str = str;
+		tmp->next = 0;
+		ft_lstadd_back_gnl(bufstr, tmp);
+	}
+}
+
+char	*get_next_line(int fd)
+{
+	char			*str;
+	static t_gnl	*bufstr[FOPEN_MAX];
+
+	if (fd < 0 || fd >= FOPEN_MAX || BUFFER_SIZE <= 0 || read(fd, &str, 0) < 0)
+		return (NULL);
+	create_list(fd, &bufstr[fd]);
+	if (bufstr[fd] == NULL)
+		return (NULL);
+	str = get_line(bufstr[fd]);
+	clean_list(&bufstr[fd]);
+	return (str);
+}
 
 static int	is_sep(char c, char set)
 {
@@ -125,10 +322,10 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-int	ft_atoi(const char *str)
+long    ft_atol(const char *str)
 {
-	int	minus_num;
-	int	res;
+	long	minus_num;
+	long    res;
 
 	minus_num = 1;
 	res = 0;
@@ -308,7 +505,7 @@ void init_stack(char **av, t_stack **a)
     // tmp = (t_stack *) malloc(sizeof(t_stack));
     while(av[++i])
     {
-        tmp = ft_stacknew(ft_atoi(av[i]));
+        tmp = ft_stacknew((int) ft_atol(av[i]));
         ft_stackadd_back(a, tmp);
     }
 }
@@ -316,13 +513,18 @@ void init_stack(char **av, t_stack **a)
 void free_stack(t_stack **a)
 {
     t_stack *tmp;
+    t_stack *current;
 
-    while (*a)
+    if (!a)
+        return;
+    current = *a;
+    while (current)
     {
-        tmp = *a;
-        *a = (*a)->next;
-        free(tmp);
+        tmp = current->next;
+        free(current);
+        current = tmp;
     }
+    *a = NULL;
 }
 
 void pa(t_stack **a, t_stack **b)
@@ -891,6 +1093,7 @@ int main(int ac, char **av)
 
     i = -1;
     // str3= NULL;
+    // printf("%s\n", get_next_line(0));
     if (ac >= 2)
     {
         str = ft_strdup("");
@@ -925,8 +1128,7 @@ int main(int ac, char **av)
             }
             if (!j)
                 return(write(2, "Error\n", 6));
-            (void) tmp;
-            // tmp = ABS(ft_atoi(new_av[i]));
+            // tmp = ABS(ft_atol(new_av[i]));
             // j = ft_strlen(new_av[i]);
             // while (tmp)
             // {
@@ -936,15 +1138,12 @@ int main(int ac, char **av)
             // }
             // if (new_av[i+1])
             //     free(str3);
-            // str3 = ft_itoa(ft_atoi(new_av[i]));
+            // str3 = ft_itoa(ft_atol(new_av[i]));
             // printf("%s\n", str3);
             // printf("%s\n", str3);
-            str3 = ft_itoa(ft_atoi(new_av[i]));
-            if (ft_strncmp(new_av[i], str3, j) != 0)
-            {
-                free(str3);
+            tmp = ft_atol(new_av[i]);
+            if (tmp < INT_MIN || tmp > INT_MAX)
                 return(write(2, "Error\n", 6));
-            }
             // free(str3);
         }
         i = 0;
@@ -953,7 +1152,7 @@ int main(int ac, char **av)
             j = i;
             while(new_av[++j])
             {
-                if (ft_atoi(new_av[i]) == ft_atoi(new_av[j]))
+                if (ft_atol(new_av[i]) == ft_atol(new_av[j]))
                     return(write(2, "Error\n", 6));
             }
         }
@@ -1044,8 +1243,8 @@ int main(int ac, char **av)
         // free(new_av);
         // free(str);
         // free(str1);
-        // free_stack(a);
-        // free_stack(b);
+        free_stack(a);
+        free_stack(b);
         // free(a);
         // free(b);
         // system("leaks push_swap");
