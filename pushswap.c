@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/19 02:24:55 by long             ###   ########.fr       */
+/*   Updated: 2023/12/19 03:45:35 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,26 +174,6 @@ int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (1);
-	return (0);
-}
-
-int	ft_strncmp(const char *s11, const char *s22, size_t n)
-{
-	size_t	count;
-	char	*s1;
-	char	*s2;
-
-	count = 0;
-	s1 = (char *)s11;
-	s2 = (char *)s22;
-	while (s1[count] != '\0' && s2[count] != '\0' && count < n)
-	{
-		if (s1[count] != s2[count])
-			return ((unsigned char)s1[count] - (unsigned char)s2[count]);
-		count++;
-	}
-	if (count != n)
-		return ((unsigned char)s1[count] - (unsigned char)s2[count]);
 	return (0);
 }
 
@@ -529,17 +509,17 @@ int is_sorted(t_stack *lst)
     }
     if (min == lst && max == last)
         return (1);
-    if (last->number > lst->number)
+    if ((last->number > lst->number) || max->next != min)
         return (0);
-    tmp = lst;
-    while (tmp != max)
+    // tmp = lst;
+    while (lst != max)
     {
-        if (tmp->next->number < tmp->number)
+        if (lst->next->number < lst->number)
             return (0);
-        tmp = tmp->next;
+        lst = lst->next;
     }
-    if (tmp->next != min)
-        return (0);
+    // if (tmp->next != min)
+    //     return (0);
     return (1);
 }
 
@@ -564,7 +544,7 @@ void sortall(t_stack **a, t_stack **b)
     }
     else
     {
-        while (set_index_stacksize(a) > 3 && set_index_stacksize(b) < 2)
+        while (set_index_stacksize(a) > 3 && set_index_stacksize(b) < 2 && !is_sorted(*a))
             pb(a, b);
         while (set_index_stacksize(a) > 3  && !is_sorted(*a))
         {
@@ -765,14 +745,79 @@ void sortall(t_stack **a, t_stack **b)
     }
 }
 
-int main(int ac, char **av)
+int invalid_error(char **new_av)
 {
-    int     i;
-    int     j;
-    long    tmp;
+    int i;
+    int j;
+    
+    i = 0;
+    while (new_av[++i])
+    {
+        j = -1;
+        while(new_av[i][++j])
+        {
+            if (new_av[i][j] == '-' || new_av[i][j] == '+')
+            {
+                if (j != 0 || new_av[i][j + 1] == 0)
+                    return(1);
+            }
+            else
+            {
+                if (!ft_isdigit(new_av[i][j]))
+                    return(1);
+            }
+        }
+        if (!j || ft_atol(new_av[i]) < INT_MIN || ft_atol(new_av[i]) > INT_MAX)
+            return(1);
+    }
+    return (0);
+}
+
+int dup_error(char **new_av)
+{
+    int i;
+    int j;
+    
+    i = 0;
+    while (new_av[++i])
+    {
+        j = i;
+        while(new_av[++j])
+        {
+            if (ft_atol(new_av[i]) == ft_atol(new_av[j]))
+                return(1);
+        }
+    }
+    return (0);
+}
+
+char **tidy_input(char **av)
+{
     char    *str;
     char    *str1;
     char    *str2;
+    int     i;
+    char    **new_av;
+        
+    i = -1;
+    str = ft_strdup("");
+    while(av[++i])
+    {
+        str1 = ft_strjoin(str, av[i]);
+        free(str);
+        str2 = ft_strjoin(str1, " ");
+        str = ft_strdup(str2);
+        free(str1);
+        free(str2);
+    }
+    new_av = ft_split(str, ' ');
+    free(str);
+    return (new_av);
+}
+
+int main(int ac, char **av)
+{
+    int     i;
     char    **new_av;
     t_stack *a;
     t_stack *b;
@@ -782,52 +827,9 @@ int main(int ac, char **av)
     {
         if (ac == 2 && av[1][0] == '\0')
             return(write(2, "Error\n", 6));
-        str = ft_strdup("");
-        while(av[++i])
-        {
-            str1 = ft_strjoin(str, av[i]);
-            free(str);
-            str2 = ft_strjoin(str1, " ");
-            str = ft_strdup(str2);
-            free(str1);
-            free(str2);
-        }
-        new_av = ft_split(str, ' ');
-        i = 0;
-        while (new_av[++i])
-        {
-            j = -1;
-            while(new_av[i][++j])
-            {
-                if (new_av[i][j] == '-')
-                {
-                    if (j != 0 || new_av[i][j + 1] == 0)
-                        return(write(2, "Error\n", 6));
-                }
-                else
-                {
-                    if (!ft_isdigit(new_av[i][j]))
-                        return(write(2, "Error\n", 6));
-                }
-            }
-            if (!j)
-                return(write(2, "Error\n", 6));
-            tmp = ft_atol(new_av[i]);
-            if (tmp < INT_MIN || tmp > INT_MAX)
-                return(write(2, "Error\n", 6));
-        }
-        i = 0;
-        while(new_av[++i])
-        {
-            j = i;
-            while(new_av[++j])
-            {
-                if (ft_atol(new_av[i]) == ft_atol(new_av[j]))
-                    return(write(2, "Error\n", 6));
-            }
-        }
-        // a = (t_stack **)malloc(sizeof(t_stack *));
-        // b = (t_stack **)malloc(sizeof(t_stack *));
+        new_av = tidy_input(av);
+        if (invalid_error(new_av) || dup_error(new_av))
+            return(write(2, "Error\n", 6));
         a = NULL;
         b = NULL;
         init_stack(new_av, &a);
@@ -836,12 +838,7 @@ int main(int ac, char **av)
         while (new_av[++i])
             free(new_av[i]);
         free(new_av);
-        free(str);
         free_stack(&a);
-        free_stack(&b);
-        free(a);
-        free(b);
-        // system("leaks push_swap");
     }
     return (0);
 }
