@@ -3253,7 +3253,6 @@ if [ $S == "OK" ]; then
 	control=2
 else
 	printf "${RED}$cont .[KO]${DEF_COLOR}";
-	printf "${ARG}";
 	control=3
 fi
 N=$(./push_swap $ARG | wc -l)
@@ -3495,6 +3494,7 @@ if [[ $R == 0 ]]; then
   printf "${GREEN}[MOK] ${DEF_COLOR}\n";
 else
   printf "${RED} [KO LEAKS] ${DEF_COLOR}\n";
+  printf "${ARG}";
 fi
 
 ARG="1 2 3 4 5 6 7 8 9";

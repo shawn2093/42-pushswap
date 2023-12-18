@@ -17,6 +17,7 @@ SRCS = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalpha.c ft_isalnum.c \
 FILE = pushswap.c
 			
 CFLAGS = -Wall -Wextra -Werror
+# OPTION = -I ./ -fsanitize=address -g3
 OPTION = -I ./
 
 OBJS = $(SRCS:.c=.o)
