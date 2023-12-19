@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/19 13:03:59 by long             ###   ########.fr       */
+/*   Updated: 2023/12/20 00:35:38 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -602,77 +602,85 @@ void	sortall(t_stack **a, t_stack **b)
 			len_b = set_index_size(b);
 			set_target_a(a, b);
             move = find_move(a, len_a, len_b);
-			if (move->index >= len_a / 2 && move->target <= len_b / 2)
+			if (move->index > len_a / 2 && move->target <= len_b / 2)
 			{
-                if (move->target + len_a - move->index > len_b / 2)
-                {
-                    while (move->index < len_a && move->target < len_b)
-                    {
-                        rrr(a, b);
-                        move->index++;
-                        move->target++;
-                    }
-                    while (move->index++ < len_a)
-                        rra(a);
-                    while (move->target++ < len_b)
-                        rrb(b);
-                }
-                else if (move->index - move->target < len_a / 2)
-                {
-                    while (move->index > 0 && move->target > 0)
-                    {
-                        rr(a, b);
-                        move->index--;
-                        move->target--;
-                    }
-                    while (move->index-- > 0)
-                        ra(a);
-                    while (move->target-- > 0)
-                        rb(b);
-                }
-                else
-                {
-                    while (move->index++ < len_a)
-                        rra(a);
-                    while (move->target-- > 0)
-                        rb(b);
-                }
+                // if (move->target + len_a - move->index > len_b / 2)
+                // {
+                //     while (move->index < len_a && move->target < len_b)
+                //     {
+                //         rrr(a, b);
+                //         move->index++;
+                //         move->target++;
+                //     }
+                //     while (move->index++ < len_a)
+                //         rra(a);
+                //     while (move->target++ < len_b)
+                //         rrb(b);
+                // }
+                // else if (move->index - move->target < len_a / 2)
+                // {
+                //     while (move->index > 0 && move->target > 0)
+                //     {
+                //         rr(a, b);
+                //         move->index--;
+                //         move->target--;
+                //     }
+                //     while (move->index-- > 0)
+                //         ra(a);
+                //     while (move->target-- > 0)
+                //         rb(b);
+                // }
+                // else
+                // {
+                //     while (move->index++ < len_a)
+                //         rra(a);
+                //     while (move->target-- > 0)
+                //         rb(b);
+                // }
+				while (move->index++ < len_a)
+					rra(a);
+				while (move->target-- > 0)
+					rb(b);
 			}
-			else if (move->index <= len_a / 2 && move->target >= len_b / 2)
+			else if (move->index <= len_a / 2 && move->target > len_b / 2)
 			{
-                if (move->index + len_b - move->target > len_a / 2)
-                {
-                    while (move->index < len_a && move->target < len_b)
-                    {
-                        rrr(a, b);
-                        move->index++;
-                        move->target++;
-                    }
-                    while (move->index++ < len_a)
-                        rra(a);
-                    while (move->target++ < len_b)
-                        rrb(b);
-                }
-                else if (move->target - move->index < len_b / 2)
-                {
-                    while (move->index > 0 && move->target > 0)
-                    {
-                        rr(a, b);
-                        move->index--;
-                        move->target--;
-                    }
-                    while (move->index-- > 0)
-                        ra(a);
-                    while (move->target-- > 0)
-                        rb(b);
-                }
-                else
-                {
-                    while (move->index-- > 0)
-                        ra(a);
-                    while (move->target++ < len_b)
-                        rrb(b);
-                }
+                // if (move->index + len_b - move->target > len_a / 2)
+                // {
+                //     while (move->index < len_a && move->target < len_b)
+                //     {
+                //         rrr(a, b);
+                //         move->index++;
+                //         move->target++;
+                //     }
+                //     while (move->index++ < len_a)
+                //         rra(a);
+                //     while (move->target++ < len_b)
+                //         rrb(b);
+                // }
+                // else if (move->target - move->index < len_b / 2)
+                // {
+                //     while (move->index > 0 && move->target > 0)
+                //     {
+                //         rr(a, b);
+                //         move->index--;
+                //         move->target--;
+                //     }
+                //     while (move->index-- > 0)
+                //         ra(a);
+                //     while (move->target-- > 0)
+                //         rb(b);
+                // }
+                // else
+                // {
+                //     while (move->index-- > 0)
+                //         ra(a);
+                //     while (move->target++ < len_b)
+                //         rrb(b);
+                // }
+				while (move->index-- > 0)
+					ra(a);
+				while (move->target++ < len_b)
+					rrb(b);
 			}
 			else if (move->index <= len_a / 2 && move->target <= len_b / 2)
 			{
@@ -687,7 +695,7 @@ void	sortall(t_stack **a, t_stack **b)
 				while (move->target-- > 0)
 					rb(b);
 			}
-			else if (move->index >= len_a / 2 && move->target >= len_b / 2)
+			else if (move->index > len_a / 2 && move->target > len_b / 2)
 			{
 				while (move->index < len_a && move->target < len_b)
 				{
@@ -759,39 +767,43 @@ void	sortall(t_stack **a, t_stack **b)
 		}
 		if (move->index > len_b / 2 && move->target <= len_a / 2)
 		{
-            if (move->target + len_b - move->index > len_a / 2)
-            {
-                while (move->index < len_b && move->target < len_a)
-                {
-                    rrr(a, b);
-                    move->index++;
-                    move->target++;
-                }
-                while (move->index++ < len_b)
-                    rrb(b);
-                while (move->target++ < len_a)
-                    rra(a);
-            }
-            else if (move->index - move->target < len_b / 2)
-            {
-                while (move->index > 0 && move->target > 0)
-                {
-                    rr(a, b);
-                    move->index--;
-                    move->target--;
-                }
-                while (move->index-- > 0)
-                    rb(b);
-                while (move->target-- > 0)
-                    ra(a);
-            }
-            else
-            {
-                while (move->index++ < len_b)
-                    rrb(b);
-                while (move->target-- > 0)
-                    ra(a);
-            }
+            // if (move->target + len_b - move->index > len_a / 2)
+            // {
+            //     while (move->index < len_b && move->target < len_a)
+            //     {
+            //         rrr(a, b);
+            //         move->index++;
+            //         move->target++;
+            //     }
+            //     while (move->index++ < len_b)
+            //         rrb(b);
+            //     while (move->target++ < len_a)
+            //         rra(a);
+            // }
+            // else if (move->index - move->target < len_b / 2)
+            // {
+            //     while (move->index > 0 && move->target > 0)
+            //     {
+            //         rr(a, b);
+            //         move->index--;
+            //         move->target--;
+            //     }
+            //     while (move->index-- > 0)
+            //         rb(b);
+            //     while (move->target-- > 0)
+            //         ra(a);
+            // }
+            // else
+            // {
+            //     while (move->index++ < len_b)
+            //         rrb(b);
+            //     while (move->target-- > 0)
+            //         ra(a);
+            // }
+			while (move->index++ < len_b)
+				rrb(b);
+			while (move->target-- > 0)
+				ra(a);
 		}
 		else if (move->index <= len_b / 2 && move->target > len_a / 2)
 		{
