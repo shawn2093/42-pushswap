@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 14:40:39 by long              #+#    #+#             */
-/*   Updated: 2023/12/20 12:52:36 by long             ###   ########.fr       */
+/*   Updated: 2023/12/20 23:56:45 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,6 @@ typedef struct s_list
 	void			*content;
 	struct s_list	*next;
 }					t_list;
-
-typedef struct s_gnl
-{
-	char			*str;
-	struct s_gnl	*next;
-}					t_gnl;
 
 typedef struct s_flags
 {
@@ -127,15 +121,5 @@ int		ft_putpad_len(char i, int len);
 int		ft_print_char(char i, t_flags flag);
 int		ft_print_str(char *i, t_flags flag);
 int		ft_printf(const char *format, ...);
-t_gnl	*ft_lstlast_gnl(t_gnl *lst);
-void	ft_lstadd_back_gnl(t_gnl **lst, t_gnl *new);
-int		ft_lstsize_gnl(t_gnl *lst);
-void	make_new(t_gnl **bufstr, char *str);
-void	clean_list(t_gnl **bufstr);
-char	*fill_letter(t_gnl *bufstr, int len);
-char	*get_line(t_gnl *bufstr);
-int		found_nl(t_gnl **bufstr);
-void	create_list(int fd, t_gnl **bufstr);
-char	*get_next_line(int fd);
 
 #endif
