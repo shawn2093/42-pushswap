@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 14:40:39 by long              #+#    #+#             */
-/*   Updated: 2023/12/16 16:33:10 by long             ###   ########.fr       */
+/*   Updated: 2023/12/20 12:52:36 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_stack
 	int				index;
 	int				target;
 	int				cost;
+	int				rank;
 	struct s_stack	*prev;
 	struct s_stack	*next;
 }					t_stack;

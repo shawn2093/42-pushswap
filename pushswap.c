@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:13:32 by long              #+#    #+#             */
-/*   Updated: 2023/12/20 00:35:38 by long             ###   ########.fr       */
+/*   Updated: 2023/12/20 18:30:14 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ t_stack	*ft_stacknew(int content)
 	ptr->next = NULL;
 	ptr->prev = NULL;
 	ptr->target = -1;
+	ptr->rank = -1;
 	ptr->index = 0;
 	ptr->cost = 0;
 	return (ptr);
@@ -518,6 +519,63 @@ int	is_sorted(t_stack *lst)
 	return (1);
 }
 
+void set_rank(t_stack **a)
+{
+	int 	*array;
+	int		i;
+	int		j;
+	int		k;
+	int		tmp;
+	t_stack	*tmp_a;
+
+	j = set_index_size(a);
+	tmp_a = *a;
+	array = (int *)malloc(sizeof(int) * j);
+	if (!array)
+		return ;
+	i = -1;
+	while (++i < j)
+	{
+		array[i] = tmp_a->number;
+		tmp_a = tmp_a->next;
+	}
+	i = -1;
+	while (++i < j)
+	{
+		k = i;
+		while (++k < j)
+		{
+			if (array[i] > array[k])
+			{
+				tmp = array[i];
+				array[i] = array[k];
+				array[k] = tmp;
+			}
+		}
+	}
+	tmp_a = *a;
+	while (tmp_a)
+	{
+		i = -1;
+		while (++i < j)
+		{
+			if (tmp_a->number == array[i])
+				tmp_a->rank = i;
+		}
+		tmp_a = tmp_a->next;
+	}
+	tmp_a = *a;
+	i = set_index_size(a) / 5;
+	if (i * 5 != set_index_size(a))
+		i++;
+	while (tmp_a)
+	{
+		tmp_a->rank = tmp_a->rank / i;
+		tmp_a = tmp_a->next;
+	}
+	free(array);
+}
+
 void	set_target_a(t_stack **a, t_stack **b)
 {
 	t_stack	*tmp_a;
@@ -573,6 +631,57 @@ t_stack *find_move(t_stack **a, int len_a, int len_b)
     return (move);
 }
 
+void	insertsort(t_stack **a, t_stack **b)
+{
+	int		i;
+	int		len_a;
+	int		len_aa;
+	t_stack	*tmp_a;
+	t_stack	*move;
+
+	i = 0;
+	len_a = set_index_size(a);
+	while (set_index_size(a) > 3 && !is_sorted(*a))
+	// while (set_index_size(a) > 0)
+	{
+		len_aa = set_index_size(a);
+		tmp_a = *a;
+		while (tmp_a)
+		{
+			tmp_a->cost = MIN(tmp_a->index, len_aa - tmp_a->index);
+			tmp_a = tmp_a->next;
+		}
+		tmp_a = *a;
+		while (tmp_a->rank != i && tmp_a->next)
+			tmp_a = tmp_a->next;
+		if (tmp_a->rank != i)
+			tmp_a = NULL;
+		if (!tmp_a)
+			i++;
+		else
+		{
+			move = tmp_a;
+			while (tmp_a)
+			{
+				if (tmp_a->rank == i && tmp_a->cost < move->cost)
+					move = tmp_a;
+				tmp_a = tmp_a->next;
+			}
+			if (move->index <= len_aa / 2)
+			{
+				while (move->index-- > 0)
+					ra(a);
+			}
+			else
+			{
+				while (move->index++ < len_aa)
+					rra(a);
+			}
+			pb(a, b);
+		}
+	}
+}
+
 void	sortall(t_stack **a, t_stack **b)
 {
 	t_stack	*tmp_a;
@@ -594,6 +703,7 @@ void	sortall(t_stack **a, t_stack **b)
 	}
 	else
 	{
+		// insertsort(a, b);
 		while (set_index_size(a) > 3 && set_index_size(b) < 2 && !is_sorted(*a))
 			pb(a, b);
 		while (set_index_size(a) > 3 && !is_sorted(*a))
@@ -604,39 +714,6 @@ void	sortall(t_stack **a, t_stack **b)
             move = find_move(a, len_a, len_b);
 			if (move->index > len_a / 2 && move->target <= len_b / 2)
 			{
-                // if (move->target + len_a - move->index > len_b / 2)
-                // {
-                //     while (move->index < len_a && move->target < len_b)
-                //     {
-                //         rrr(a, b);
-                //         move->index++;
-                //         move->target++;
-                //     }
-                //     while (move->index++ < len_a)
-                //         rra(a);
-                //     while (move->target++ < len_b)
-                //         rrb(b);
-                // }
-                // else if (move->index - move->target < len_a / 2)
-                // {
-                //     while (move->index > 0 && move->target > 0)
-                //     {
-                //         rr(a, b);
-                //         move->index--;
-                //         move->target--;
-                //     }
-                //     while (move->index-- > 0)
-                //         ra(a);
-                //     while (move->target-- > 0)
-                //         rb(b);
-                // }
-                // else
-                // {
-                //     while (move->index++ < len_a)
-                //         rra(a);
-                //     while (move->target-- > 0)
-                //         rb(b);
-                // }
 				while (move->index++ < len_a)
 					rra(a);
 				while (move->target-- > 0)
@@ -644,39 +721,6 @@ void	sortall(t_stack **a, t_stack **b)
 			}
 			else if (move->index <= len_a / 2 && move->target > len_b / 2)
 			{
-                // if (move->index + len_b - move->target > len_a / 2)
-                // {
-                //     while (move->index < len_a && move->target < len_b)
-                //     {
-                //         rrr(a, b);
-                //         move->index++;
-                //         move->target++;
-                //     }
-                //     while (move->index++ < len_a)
-                //         rra(a);
-                //     while (move->target++ < len_b)
-                //         rrb(b);
-                // }
-                // else if (move->target - move->index < len_b / 2)
-                // {
-                //     while (move->index > 0 && move->target > 0)
-                //     {
-                //         rr(a, b);
-                //         move->index--;
-                //         move->target--;
-                //     }
-                //     while (move->index-- > 0)
-                //         ra(a);
-                //     while (move->target-- > 0)
-                //         rb(b);
-                // }
-                // else
-                // {
-                //     while (move->index-- > 0)
-                //         ra(a);
-                //     while (move->target++ < len_b)
-                //         rrb(b);
-                // }
 				while (move->index-- > 0)
 					ra(a);
 				while (move->target++ < len_b)
@@ -767,39 +811,6 @@ void	sortall(t_stack **a, t_stack **b)
 		}
 		if (move->index > len_b / 2 && move->target <= len_a / 2)
 		{
-            // if (move->target + len_b - move->index > len_a / 2)
-            // {
-            //     while (move->index < len_b && move->target < len_a)
-            //     {
-            //         rrr(a, b);
-            //         move->index++;
-            //         move->target++;
-            //     }
-            //     while (move->index++ < len_b)
-            //         rrb(b);
-            //     while (move->target++ < len_a)
-            //         rra(a);
-            // }
-            // else if (move->index - move->target < len_b / 2)
-            // {
-            //     while (move->index > 0 && move->target > 0)
-            //     {
-            //         rr(a, b);
-            //         move->index--;
-            //         move->target--;
-            //     }
-            //     while (move->index-- > 0)
-            //         rb(b);
-            //     while (move->target-- > 0)
-            //         ra(a);
-            // }
-            // else
-            // {
-            //     while (move->index++ < len_b)
-            //         rrb(b);
-            //     while (move->target-- > 0)
-            //         ra(a);
-            // }
 			while (move->index++ < len_b)
 				rrb(b);
 			while (move->target-- > 0)
@@ -807,39 +818,6 @@ void	sortall(t_stack **a, t_stack **b)
 		}
 		else if (move->index <= len_b / 2 && move->target > len_a / 2)
 		{
-            // if (move->index + len_a - move->target > len_b / 2)
-            // {
-            //     while (move->index < len_b && move->target < len_a)
-            //     {
-            //         rrr(a, b);
-            //         move->index++;
-            //         move->target++;
-            //     }
-            //     while (move->index++ < len_b)
-            //         rrb(b);
-            //     while (move->target++ < len_a)
-            //         rra(a);
-            // }
-            // else if (move->target - move->index < len_a / 2)
-            // {
-            //     while (move->index > 0 && move->target > 0)
-            //     {
-            //         rr(a, b);
-            //         move->index--;
-            //         move->target--;
-            //     }
-            //     while (move->index-- > 0)
-            //         rb(b);
-            //     while (move->target-- > 0)
-            //         ra(a);
-            // }
-            // else
-            // {
-            //     while (move->index-- > 0)
-            //         rb(b);
-            //     while (move->target++ < len_a)
-            //         rra(a);
-            // }
             while (move->index-- > 0)
                 rb(b);
             while (move->target++ < len_a)
@@ -975,7 +953,19 @@ int	main(int ac, char **av)
 		a = NULL;
 		b = NULL;
 		init_stack(new_av, &a);
+		set_rank(&a);
 		sortall(&a, &b);
+		// insertsort(&a, &b);
+		// while (a)
+		// {
+		// 	printf("%d\n", a->number);
+		// 	a = a->next;
+		// }
+		// while (b)
+		// {
+		// 	printf("%d\n", b->number);
+		// 	b = b->next;
+		// }
 		i = -1;
 		while (new_av[++i])
 			free(new_av[i]);
