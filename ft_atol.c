@@ -1,28 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/16 21:36:18 by long              #+#    #+#             */
-/*   Updated: 2023/11/28 16:24:50 by long             ###   ########.fr       */
+/*   Created: 2023/12/21 17:16:17 by long              #+#    #+#             */
+/*   Updated: 2023/12/21 17:16:20 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+long	ft_atol(char *str)
 {
-	size_t			i;
-	unsigned char	*ptr;
+	long	minus_num;
+	long	res;
 
-	i = 0;
-	ptr = (unsigned char *)b;
-	while (i < len)
+	minus_num = 1;
+	res = 0;
+	while (*str == '\t' || *str == '\n' || *str == '\v' || *str == '\f'
+		|| *str == '\r' || *str == ' ')
+		str++;
+	if (*str == '-' || *str == '+')
 	{
-		ptr[i] = (unsigned char)c;
-		i++;
+		if (*str == '-')
+			minus_num *= -1;
+		str++;
 	}
-	return (b);
+	while (*str >= '0' && *str <= '9')
+	{
+		res = res * 10 + *str - '0';
+		str++;
+	}
+	return (res * minus_num);
 }

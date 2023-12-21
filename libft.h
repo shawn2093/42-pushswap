@@ -6,53 +6,19 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 14:40:39 by long              #+#    #+#             */
-/*   Updated: 2023/12/20 23:56:45 by long             ###   ########.fr       */
+/*   Updated: 2023/12/21 17:58:13 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
-# define ABS(x) (x < 0) ? -x : x
 # define MIN(x, y) (x < y) ? x : y
 # define MAX(x, y) (x < y) ? y : x
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 2
-# endif
 
-# include <fcntl.h>
-# include <ctype.h>
-# include <stddef.h>
+# include <limits.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
 # include <unistd.h>
-# include <limits.h>
-# include <stdarg.h>
-
-# if defined (__linux__)
-#  define PTRNULL "(nil)"
-# elif defined (__APPLE__)
-#  define PTRNULL "0x0"
-# endif
-
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}					t_list;
-
-typedef struct s_flags
-{
-	int	type;
-	int	left;
-	int	space;
-	int	plus;
-	int	zero;
-	int	hash;
-	int	dot;
-	int	width;
-	int	precision;
-}		t_flags;
 
 typedef struct s_stack
 {
@@ -65,61 +31,50 @@ typedef struct s_stack
 	struct s_stack	*next;
 }					t_stack;
 
-int		ft_atoi(const char *str);
-void	ft_bzero(void *s, size_t n);
-void	*ft_calloc(size_t count, size_t size);
-int		ft_isalpha(int c);
-int		ft_isalnum(int c);
 int		ft_isdigit(int c);
-int		ft_isascii(int c);
-int		ft_isprint(int c);
-void	*ft_memchr(const void *s, int c, size_t n);
-int		ft_memcmp(const void *s1, const void *s2, size_t n);
-void	*ft_memcpy(void *dst, const void *src, size_t n);
-void	*ft_memmove(void *dst, const void *src, size_t len);
-void	*ft_memset(void *b, int c, size_t len);
-char	*ft_strchr(char *s, int c);
 char	*ft_strdup(const char *s1);
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlen(const char *s);
-int		ft_strncmp(const char *s11, const char *s22, size_t n);
-char	*ft_strnstr(const char *haystack, const char *needle,
-			size_t len);
-char	*ft_strrchr(char *s, int c);
-int		ft_tolower(int c);
-int		ft_toupper(int c);
 char	*ft_itoa(int n);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char set);
-char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
-void	ft_striteri(char *s, void (*f)(unsigned int, char *));
-void	ft_putchar_fd(char c, int fd);
-void	ft_putstr_fd(char *s, int fd);
-void	ft_putendl_fd(char *s, int fd);
-void	ft_putnbr_fd(int n, int fd);
-t_list	*ft_lstnew(void *content);
-void	ft_lstadd_front(t_list **lst, t_list *new);
-int		ft_lstsize(t_list *lst);
-t_list	*ft_lstlast(t_list *lst);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstdelone(t_list *lst, void (*del)(void *));
-void	ft_lstclear(t_list **lst, void (*del)(void *));
-void	ft_lstiter(t_list *lst, void (*f)(void *));
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *),
-			void (*del)(void *));			
-int		ft_print_ptr(void *i, t_flags flag);
-int		ft_print_ux(unsigned int i, t_flags flag);
-int		ft_print_int(int i, t_flags flag);
-t_flags	ft_flags_init(void);
-char	*ft_htoa(unsigned long long n, int i);
-int		ft_putchar_len(char i);
-int		ft_putstr_len(char *i);
-int		ft_putpad_len(char i, int len);
-int		ft_print_char(char i, t_flags flag);
-int		ft_print_str(char *i, t_flags flag);
-int		ft_printf(const char *format, ...);
+long	ft_atol(char *str);
+t_stack	*ft_stacknew(int content);
+t_stack	*ft_stacklast(t_stack *lst);
+void	ft_stackadd_back(t_stack **lst, t_stack *new);
+void	ft_stackadd_front(t_stack **lst, t_stack *new);
+void	init_stack(char **av, t_stack **a);
+void	move_a_to_b(t_stack **a, t_stack **b);
+void	rot_min_to_top(t_stack **a);
+void	rot_rrb_dir(t_stack **a, t_stack **b, t_stack *move);
+void	rot_rb_dir(t_stack **a, t_stack **b, t_stack *move);
+void	move_b_to_a(t_stack **a, t_stack **b);
+void	pa(t_stack **a, t_stack **b);
+void	pb(t_stack **a, t_stack **b);
+void	ra(t_stack **a);
+void	rb(t_stack **b);
+void	rr(t_stack **a, t_stack **b);
+void	rra(t_stack **a);
+void	rrb(t_stack **b);
+void	rrr(t_stack **a, t_stack **b);
+void	sa(t_stack **a);
+void	sb(t_stack **b);
+void	ss(t_stack **a, t_stack **b);
+void	sortthree(t_stack **a);
+int		*sort_rank(int *array, t_stack *a, int j);
+void	set_rank(t_stack **a, int div, int j);
+void	div_n_conq(t_stack **a, t_stack **b, t_stack *tmp_a, int i);
+void	insertsort(t_stack **a, t_stack **b, int div);
+void	free_stack(t_stack **a);
+int		set_index_size(t_stack **a);
+t_stack	*min_finder(t_stack *lst);
+t_stack	*max_finder(t_stack *lst);
+int		is_sorted(t_stack *lst);
+int		set_target_b(t_stack **a, t_stack **b);
+t_stack	*find_move(t_stack **b, int len_a, int len_b);
+void	sortall(t_stack **a, t_stack **b);
+int		invalid_error(char **new_av);
+int		dup_error(char **new_av);
+char	**tidy_input(char **av);
+
 
 #endif
