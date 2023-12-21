@@ -6,7 +6,7 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 14:40:39 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 17:58:13 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 00:14:56 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	set_rank(t_stack **a, int div, int j);
 void	div_n_conq(t_stack **a, t_stack **b, t_stack *tmp_a, int i);
 void	insertsort(t_stack **a, t_stack **b, int div);
 void	free_stack(t_stack **a);
+void 	free_str(char **new_av);
 int		set_index_size(t_stack **a);
 t_stack	*min_finder(t_stack *lst);
 t_stack	*max_finder(t_stack *lst);
@@ -75,6 +76,5 @@ void	sortall(t_stack **a, t_stack **b);
 int		invalid_error(char **new_av);
 int		dup_error(char **new_av);
 char	**tidy_input(char **av);
-
 
 #endif
