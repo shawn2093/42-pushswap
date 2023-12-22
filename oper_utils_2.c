@@ -6,45 +6,60 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 17:36:01 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 17:36:02 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 14:39:55 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-void	rra(t_stack **a)
+void	rra(t_stack **a, int print)
 {
 	t_stack	*tmp;
 
-	tmp = ft_stacklast(*a);
-	tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	ft_stackadd_front(a, tmp);
-	write(1, "rra\n", 4);
+	if (*a && (*a)->next)
+	{
+		tmp = ft_stacklast(*a);
+		tmp->prev->next = NULL;
+		tmp->prev = NULL;
+		ft_stackadd_front(a, tmp);
+	}
+	if (print)
+		write(1, "rra\n", 4);
 }
 
-void	rrb(t_stack **b)
+void	rrb(t_stack **b, int print)
 {
 	t_stack	*tmp;
 
-	tmp = ft_stacklast(*b);
-	tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	ft_stackadd_front(b, tmp);
-	write(1, "rrb\n", 4);
+	if (*b && (*b)->next)
+	{
+		tmp = ft_stacklast(*b);
+		tmp->prev->next = NULL;
+		tmp->prev = NULL;
+		ft_stackadd_front(b, tmp);
+	}
+	if (print)
+		write(1, "rrb\n", 4);
 }
 
-void	rrr(t_stack **a, t_stack **b)
+void	rrr(t_stack **a, t_stack **b, int print)
 {
 	t_stack	*tmp;
 
-	tmp = ft_stacklast(*a);
-	tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	ft_stackadd_front(a, tmp);
-	tmp = ft_stacklast(*b);
-	tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	ft_stackadd_front(b, tmp);
-	write(1, "rrr\n", 4);
+	if (*a && (*a)->next)
+	{
+		tmp = ft_stacklast(*a);
+		tmp->prev->next = NULL;
+		tmp->prev = NULL;
+		ft_stackadd_front(a, tmp);
+	}
+	if (*b && (*b)->next)
+	{
+		tmp = ft_stacklast(*b);
+		tmp->prev->next = NULL;
+		tmp->prev = NULL;
+		ft_stackadd_front(b, tmp);
+	}
+	if (print)
+		write(1, "rrr\n", 4);
 }

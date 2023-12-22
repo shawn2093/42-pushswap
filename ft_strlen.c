@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 20:51:27 by long              #+#    #+#             */
-/*   Updated: 2023/11/28 16:24:49 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 00:23:49 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 size_t	ft_strlen(const char *s)
 {

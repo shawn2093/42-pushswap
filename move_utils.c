@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 17:26:59 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 17:27:00 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 21:00:10 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 void	move_a_to_b(t_stack **a, t_stack **b)
 {
@@ -19,7 +19,7 @@ void	move_a_to_b(t_stack **a, t_stack **b)
 	else if (set_index_size(a) == 2)
 	{
 		if ((*a)->number > (*a)->next->number)
-			ra(a);
+			ra(a, 1);
 	}
 	else
 	{
@@ -43,15 +43,16 @@ void	rot_min_to_top(t_stack **a)
 	min = min_finder(*a);
 	while (min->index > 0 && min->index <= len_a / 2)
 	{
-		ra(a);
+		ra(a, 1);
 		min->index--;
 	}
 	while (min->index > len_a / 2 && min->index < len_a)
 	{
-		rra(a);
+		rra(a, 1);
 		min->index++;
 	}
 }
+
 void	rot_rrb_dir(t_stack **a, t_stack **b, t_stack *move)
 {
 	int	len_a;
@@ -62,22 +63,22 @@ void	rot_rrb_dir(t_stack **a, t_stack **b, t_stack *move)
 	if (move->index > len_b / 2 && move->target <= len_a / 2)
 	{
 		while (move->index++ < len_b)
-			rrb(b);
+			rrb(b, 1);
 		while (move->target-- > 0)
-			ra(a);
+			ra(a, 1);
 	}
 	else if (move->index > len_b / 2 && move->target > len_a / 2)
 	{
 		while (move->index < len_b && move->target < len_a)
 		{
-			rrr(a, b);
+			rrr(a, b, 1);
 			move->index++;
 			move->target++;
 		}
 		while (move->index++ < len_b)
-			rrb(b);
+			rrb(b, 1);
 		while (move->target++ < len_a)
-			rra(a);
+			rra(a, 1);
 	}
 }
 
@@ -91,22 +92,22 @@ void	rot_rb_dir(t_stack **a, t_stack **b, t_stack *move)
 	if (move->index <= len_b / 2 && move->target > len_a / 2)
 	{
 		while (move->index-- > 0)
-			rb(b);
+			rb(b, 1);
 		while (move->target++ < len_a)
-			rra(a);
+			rra(a, 1);
 	}
 	else if (move->index <= len_b / 2 && move->target <= len_a / 2)
 	{
 		while (move->index > 0 && move->target > 0)
 		{
-			rr(a, b);
+			rr(a, b, 1);
 			move->index--;
 			move->target--;
 		}
 		while (move->index-- > 0)
-			rb(b);
+			rb(b, 1);
 		while (move->target-- > 0)
-			ra(a);
+			ra(a, 1);
 	}
 }
 
@@ -126,6 +127,6 @@ void	move_b_to_a(t_stack **a, t_stack **b)
 			rot_rrb_dir(a, b, move);
 		else
 			rot_rb_dir(a, b, move);
-		pa(a, b);
+		pa(a, b, 1);
 	}
 }

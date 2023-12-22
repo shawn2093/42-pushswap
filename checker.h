@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   checker.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/17 12:02:11 by long              #+#    #+#             */
-/*   Updated: 2023/12/22 00:23:49 by long             ###   ########.fr       */
+/*   Created: 2023/12/22 20:21:40 by long              #+#    #+#             */
+/*   Updated: 2023/12/22 21:14:34 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#ifndef CHECKER_H
+# define CHECKER_H
 
-char	*ft_strdup(const char *s1)
-{
-	int		i;
-	int		j;
-	char	*t;
+# include "get_next_line.h"
+# include "push_swap.h"
 
-	i = 0;
-	j = -1;
-	while (s1[i])
-		i++;
-	t = malloc((i + 1) * sizeof(char));
-	if (!t)
-		return (0);
-	while (s1[++j])
-	{
-		t[j] = s1[j];
-	}
-	t[j] = '\0';
-	return (t);
-}
+int		ft_strcmp(char *s1, char *s2);
+int		check_cmd(char *s1);
+void	free_cmd(t_list **cmd_lst, char **new_av);
+void	parse_cmd(t_list *tmp, t_stack **a, t_stack **b);
+int		create_oper_lst(t_list **cmd_lst, char **new_av, char *cmd);
+void	exec_oper(char **new_av, t_list *cmd_lst);
+
+#endif

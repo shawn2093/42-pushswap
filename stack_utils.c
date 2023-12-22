@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 17:19:16 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 17:19:17 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 00:23:49 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 t_stack	*ft_stacknew(int content)
 {

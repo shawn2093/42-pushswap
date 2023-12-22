@@ -6,41 +6,56 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 17:35:56 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 17:35:57 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 14:40:31 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-void	sa(t_stack **a)
+void	sa(t_stack **a, int print)
 {
 	int	tmp;
 
-	tmp = (*a)->number;
-	(*a)->number = (*a)->next->number;
-	(*a)->next->number = tmp;
-	write(1, "sa\n", 3);
+	if (*a && (*a)->next)
+	{
+		tmp = (*a)->number;
+		(*a)->number = (*a)->next->number;
+		(*a)->next->number = tmp;
+	}
+	if (print)
+		write(1, "sa\n", 3);
 }
 
-void	sb(t_stack **b)
+void	sb(t_stack **b, int print)
 {
 	int	tmp;
 
-	tmp = (*b)->number;
-	(*b)->number = (*b)->next->number;
-	(*b)->next->number = tmp;
-	write(1, "sb\n", 3);
+	if (*b && (*b)->next)
+	{
+		tmp = (*b)->number;
+		(*b)->number = (*b)->next->number;
+		(*b)->next->number = tmp;
+	}
+	if (print)
+		write(1, "sb\n", 3);
 }
 
-void	ss(t_stack **a, t_stack **b)
+void	ss(t_stack **a, t_stack **b, int print)
 {
 	int	tmp;
 
-	tmp = (*a)->number;
-	(*a)->number = (*a)->next->number;
-	(*a)->next->number = tmp;
-	tmp = (*b)->number;
-	(*b)->number = (*b)->next->number;
-	(*b)->next->number = tmp;
-	write(1, "ss\n", 3);
+	if (*a && (*a)->next)
+	{
+		tmp = (*a)->number;
+		(*a)->number = (*a)->next->number;
+		(*a)->next->number = tmp;
+	}
+	if (*b && (*b)->next)
+	{
+		tmp = (*b)->number;
+		(*b)->number = (*b)->next->number;
+		(*b)->next->number = tmp;
+	}
+	if (print)
+		write(1, "ss\n", 3);
 }

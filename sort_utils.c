@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 18:01:40 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 18:01:41 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 00:23:49 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 int	set_index_size(t_stack **a)
 {

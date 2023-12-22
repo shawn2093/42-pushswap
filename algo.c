@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 17:41:20 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 17:44:43 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 14:43:56 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 void	sortthree(t_stack **a)
 {
@@ -23,20 +23,20 @@ void	sortthree(t_stack **a)
 	third = (*a)->next->next->number;
 	if (first < third && second > third)
 	{
-		ra(a);
-		sa(a);
-		rra(a);
+		ra(a, 1);
+		sa(a, 1);
+		rra(a, 1);
 	}
 	else if (first < third && first > second)
-		sa(a);
+		sa(a, 1);
 	else if (first < second && first > third)
-		rra(a);
+		rra(a, 1);
 	else if (first > third && second < third)
-		ra(a);
+		ra(a, 1);
 	else if (first > second && second > third)
 	{
-		sa(a);
-		rra(a);
+		sa(a, 1);
+		rra(a, 1);
 	}
 }
 
@@ -114,14 +114,14 @@ void	div_n_conq(t_stack **a, t_stack **b, t_stack *tmp_a, int i)
 	if (move->index <= len_a / 2)
 	{
 		while (move->index-- > 0)
-			ra(a);
+			ra(a, 1);
 	}
 	else
 	{
 		while (move->index++ < len_a)
-			rra(a);
+			rra(a, 1);
 	}
-	pb(a, b);
+	pb(a, b, 1);
 }
 
 void	insertsort(t_stack **a, t_stack **b, int div)

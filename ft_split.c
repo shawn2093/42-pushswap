@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 16:20:14 by long              #+#    #+#             */
-/*   Updated: 2023/11/28 16:24:49 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 00:23:49 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 static int	is_sep(char c, char set)
 {

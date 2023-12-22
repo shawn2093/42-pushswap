@@ -6,11 +6,11 @@
 /*   By: long <long@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 18:00:08 by long              #+#    #+#             */
-/*   Updated: 2023/12/21 18:00:09 by long             ###   ########.fr       */
+/*   Updated: 2023/12/22 21:04:36 by long             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
 int	is_sorted(t_stack *lst)
 {
@@ -81,6 +81,33 @@ int	dup_error(char **new_av)
 		{
 			if (ft_atol(new_av[i]) == ft_atol(new_av[j]))
 				return (1);
+		}
+	}
+	return (0);
+}
+
+int	empty_error(int ac, char **av)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (++i < ac)
+	{
+		j = -1;
+		if (av[i][0] == '\0')
+			return (1);
+		if (ac > 2)
+		{	
+			while (av[i][++j])
+			{
+				if ((av[i][j] == '-' || av[i][j] == '+')
+					&& (j != 0 || av[i][j + 1] == 0))
+					return (1);
+				if (!(av[i][j] == '-' || av[i][j] == '+')
+					&& !ft_isdigit(av[i][j]))
+					return (1);
+			}
 		}
 	}
 	return (0);
